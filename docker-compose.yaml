@@ -9,7 +9,7 @@ services:
       - "7077:7077"
     networks:
       - spark-network
-#
+# 그 외의 속성들을 추가해서 구현하기
   spark-worker:
     image: bitnami/spark:latest
     environment:
