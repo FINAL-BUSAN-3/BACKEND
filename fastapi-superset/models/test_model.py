@@ -1,4 +1,4 @@
-# models/base_model.py
+# models/test_model.py
 
 class TestModel:
     @staticmethod

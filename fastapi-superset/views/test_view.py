@@ -1,4 +1,4 @@
-# views/base_view.py
+# views/test_view.py
 
 class TestView:
     @staticmethod
