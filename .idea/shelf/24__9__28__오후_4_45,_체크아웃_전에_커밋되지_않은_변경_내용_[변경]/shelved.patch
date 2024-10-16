@@ -1,0 +1,62 @@
+Index: controllers/test_controller.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># controllers/base_controller.py\r\nfrom fastapi import APIRouter\r\nfrom models.test_model import TestModel\r\nfrom views.test_view import TestView\r\n\r\nrouter = APIRouter()\r\n\r\n\r\n@router.get(\"/\")\r\ndef read_root():\r\n    # 모델에서 데이터를 가져옴\r\n    data = TestModel.get_data()\r\n\r\n    # 뷰를 통해 데이터를 포맷팅하여 반환\r\n    return TestView.render(data)
+===================================================================
+diff --git a/controllers/test_controller.py b/controllers/test_controller.py
+--- a/controllers/test_controller.py	(revision 493bd1b42151ccda52ec2cd6dd4fadd7fd1d635c)
++++ b/controllers/test_controller.py	(date 1727426213513)
+@@ -1,4 +1,15 @@
+-# controllers/base_controller.py
++# controllers/test_controller.py
++from fastapi import APIRouter
++from models.test_model import TestModel
++from views.test_view import TestView
++
++router = APIRouter()
++
++
++@router.get("/")
++def read_root():
++    # 모델에서 데이터를 가져옴
++    data = TestModel.get_data()# controllers/test_controller.py
+ from fastapi import APIRouter
+ from models.test_model import TestModel
+ from views.test_view import TestView
+@@ -12,4 +23,7 @@
+     data = TestModel.get_data()
+ 
+     # 뷰를 통해 데이터를 포맷팅하여 반환
++    return TestView.render(data)
++
++    # 뷰를 통해 데이터를 포맷팅하여 반환
+     return TestView.render(data)
+\ No newline at end of file
+Index: models/test_model.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># models/base_model.py\r\n\r\nclass TestModel:\r\n    @staticmethod\r\n    def get_data():\r\n        \"\"\"데이터를 반환하는 메서드\"\"\"\r\n        return {\"message\": \"Hello from Model!\"}
+===================================================================
+diff --git a/models/test_model.py b/models/test_model.py
+--- a/models/test_model.py	(revision 493bd1b42151ccda52ec2cd6dd4fadd7fd1d635c)
++++ b/models/test_model.py	(date 1727426174276)
+@@ -1,4 +1,4 @@
+-# models/base_model.py
++# models/test_model.py
+ 
+ class TestModel:
+     @staticmethod
+Index: views/test_view.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># views/base_view.py\r\n\r\nclass TestView:\r\n    @staticmethod\r\n    def render(data: dict):\r\n        \"\"\"데이터를 보기 좋게 포맷팅\"\"\"\r\n        return {\"view_message\": f\"View says: {data['message']}\"}
+===================================================================
+diff --git a/views/test_view.py b/views/test_view.py
+--- a/views/test_view.py	(revision 493bd1b42151ccda52ec2cd6dd4fadd7fd1d635c)
++++ b/views/test_view.py	(date 1727426174276)
+@@ -1,4 +1,4 @@
+-# views/base_view.py
++# views/test_view.py
+ 
+ class TestView:
+     @staticmethod

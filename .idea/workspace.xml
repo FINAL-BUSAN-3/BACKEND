@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SPLITTER_PROPORTION" value="0.32987013" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi_superset/main.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="EO3-49-SUPERSET-BASELINE" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Basil-Pesto-Pizza&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/FINAL-BUSAN-3/BACKEND.git&quot;,
+    &quot;accountId&quot;: &quot;e159f07f-e5a3-4d64-8423-1a3033148387&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2mMudY9P7vYYr53ZfDtmRbMcLlC" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "EO3-65-Vue.js-BASELINE",
+    "last_opened_file_path": "C:/Users/KFQ/Desktop/git/BACKEND/fastapi_superset/routers",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
+  <component name="Push.Settings">
+    <option name="SHOW_DETAILS_PANEL" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi_superset\routers" />
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND\controllers" />
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND\views" />
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND\models" />
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi_superset\routers" />
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi-superset" />
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND" />
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python">
+      <module name="BACKEND" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="main.py" />
+      <option name="PARAMETERS" value="main:app --reload" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-884f5ed5d46b-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.22855.92" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="" />
+      <created>1726898854628</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1726898854628</updated>
+    </task>
+    <task id="LOCAL-00001" summary="커밋앤푸시">
+      <option name="closed" value="true" />
+      <created>1726899204965</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1726899204965</updated>
+    </task>
+    <task id="LOCAL-00002" summary="커밋앤푸시">
+      <option name="closed" value="true" />
+      <created>1726899386522</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1726899386522</updated>
+    </task>
+    <task id="LOCAL-00003" summary="커밋앤푸시">
+      <option name="closed" value="true" />
+      <created>1726899518845</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1726899518845</updated>
+    </task>
+    <task id="LOCAL-00004" summary="&lt;FastAPI 베이스 라인1&gt;&#10;endpoint function에 디버깅 포인트를 만들고,&#10;Frame stack 제일 밑에서부터 따라갑니다.&#10;&#10;Pycharm Debug 모드로 main.py를 실행하고 http://localhist:8000/api/hello-world 요청을 날립니다.">
+      <option name="closed" value="true" />
+      <created>1727073815745</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1727073815745</updated>
+    </task>
+    <task id="LOCAL-00005" summary="&lt;FastAPI 베이스 라인1&gt;&#10;endpoint function에 디버깅 포인트를 만들고,&#10;Frame stack 제일 밑에서부터 따라갑니다.&#10;&#10;Pycharm Debug 모드로 main.py를 실행하고 http://localhist:8000/api/hello-world 요청을 날립니다.">
+      <option name="closed" value="true" />
+      <created>1727142824239</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1727142824239</updated>
+    </task>
+    <task id="LOCAL-00006" summary="&lt;FastAPI 베이스 라인1&gt;&#10;endpoint function에 디버깅 포인트를 만들고,&#10;Frame stack 제일 밑에서부터 따라갑니다.&#10;&#10;Pycharm Debug 모드로 main.py를 실행하고 http://localhist:8000/api/hello-world 요청을 날립니다.">
+      <option name="closed" value="true" />
+      <created>1727253365451</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1727253365451</updated>
+    </task>
+    <task id="LOCAL-00007" summary="&lt;FastAPI 베이스 라인2&gt;&#10;1. 파일구조 변경했습니다.&#10;2. 수행방법 구체적으로 작성했습니다.&#10;3. 발생한 오류 정리했습니다.">
+      <option name="closed" value="true" />
+      <created>1727253481905</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1727253481905</updated>
+    </task>
+    <task id="LOCAL-00008" summary="&lt;FastAPI 베이스 라인2&gt;&#10;1. 파일구조 변경했습니다.&#10;2. 수행방법 구체적으로 작성했습니다.&#10;3. 발생한 오류 정리했습니다.">
+      <option name="closed" value="true" />
+      <created>1727335214244</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1727335214244</updated>
+    </task>
+    <task id="LOCAL-00009" summary="&lt;FastAPI VMC 패턴1&gt;">
+      <option name="closed" value="true" />
+      <created>1727337358561</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1727337358561</updated>
+    </task>
+    <task id="LOCAL-00010" summary="&lt;FastAPI MVC 패턴2&gt;&#10;Vue.js와 FastAPI 환경 구축">
+      <option name="closed" value="true" />
+      <created>1727763800293</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1727763800293</updated>
+    </task>
+    <task id="LOCAL-00011" summary="&lt;FastAPI MVC 패턴2&gt;&#10;Vue.js와 FastAPI 환경 구축">
+      <option name="closed" value="true" />
+      <created>1727770512347</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1727770512347</updated>
+    </task>
+    <task id="LOCAL-00012" summary="&lt;FastAPI MVC 패턴3&gt;&#10;FastAPI와 Superset 환경 구축&#10;- 파일 구성 정리">
+      <option name="closed" value="true" />
+      <created>1727770732622</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1727770732622</updated>
+    </task>
+    <task id="LOCAL-00013" summary="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축">
+      <option name="closed" value="true" />
+      <created>1728885598900</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1728885598900</updated>
+    </task>
+    <task id="LOCAL-00014" summary="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축">
+      <option name="closed" value="true" />
+      <created>1728886359958</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1728886359958</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/EO3-49-SUPERSET-BASELINE" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="커밋앤푸시" />
+    <MESSAGE value="&lt;FastAPI 베이스 라인1&gt;&#10;endpoint function에 디버깅 포인트를 만들고,&#10;Frame stack 제일 밑에서부터 따라갑니다.&#10;&#10;Pycharm Debug 모드로 main.py를 실행하고 http://localhist:8000/api/hello-world 요청을 날립니다." />
+    <MESSAGE value="&lt;FastAPI 베이스 라인2&gt;&#10;1. 파일구조 변경했습니다.&#10;2. 수행방법 구체적으로 작성했습니다.&#10;3. 발생한 오류 정리했습니다." />
+    <MESSAGE value="&lt;FastAPI MVC 패턴1&gt;" />
+    <MESSAGE value="&lt;FastAPI MVC 패턴1&gt;" />
+    <MESSAGE value="&lt;FastAPI MVC 패턴2&gt;&#10;Vue.js와 FastAPI 환경 구축" />
+    <MESSAGE value="&lt;FastAPI MVC 패턴3&gt;&#10;FastAPI와 Superset 환경 구축&#10;- 파일 구성 정리" />
+    <MESSAGE value="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축" />
+    <option name="LAST_COMMIT_MESSAGE" value="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축" />
+  </component>
+</project>
