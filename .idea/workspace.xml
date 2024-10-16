@@ -7,9 +7,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi_superset/main.py" afterDir="false" />
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="&lt;Fastapi router 구성1&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록">
+      <change afterPath="$PROJECT_DIR$/fastapi_superset/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fastapi_superset/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fastapi_superset/routers/test_router.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fastapi_superset/superset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/Activate.ps1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/activate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/activate.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/deactivate.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/fastapi.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/httpx.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/pip.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/pip3.11.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/pip3.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/python.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/pythonw.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/uvicorn.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/pyvenv.cfg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +43,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="EO3-49-SUPERSET-BASELINE" />
+        <entry key="$PROJECT_DIR$" value="EO3-65-Vue.js-BASELINE" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -56,16 +73,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "EO3-65-Vue.js-BASELINE",
-    "last_opened_file_path": "C:/Users/KFQ/Desktop/git/BACKEND/fastapi_superset/routers",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;EO3-73-FastAPI-Router&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/KFQ/Desktop/git/BACKEND&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="Push.Settings">
     <option name="SHOW_DETAILS_PANEL" value="false" />
   </component>
@@ -79,6 +96,7 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi_superset\routers" />
+      <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi_superset" />
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi-superset" />
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND" />
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi" />
@@ -241,7 +259,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728886359958</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="&lt;Fastapi router 구성1&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록">
+      <option name="closed" value="true" />
+      <created>1729057837801</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1729057837801</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -260,7 +286,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/EO3-49-SUPERSET-BASELINE" />
+                        <option value="origin/EO3-73-FastAPI-Router" />
                       </list>
                     </value>
                   </entry>
@@ -281,6 +307,7 @@
     <MESSAGE value="&lt;FastAPI MVC 패턴2&gt;&#10;Vue.js와 FastAPI 환경 구축" />
     <MESSAGE value="&lt;FastAPI MVC 패턴3&gt;&#10;FastAPI와 Superset 환경 구축&#10;- 파일 구성 정리" />
     <MESSAGE value="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축" />
-    <option name="LAST_COMMIT_MESSAGE" value="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축" />
+    <MESSAGE value="&lt;Fastapi router 구성1&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록" />
+    <option name="LAST_COMMIT_MESSAGE" value="&lt;Fastapi router 구성1&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록" />
   </component>
 </project>
