@@ -7,31 +7,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="&lt;Fastapi router 구성1&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록">
-      <change afterPath="$PROJECT_DIR$/fastapi_superset/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fastapi_superset/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fastapi_superset/routers/test_router.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fastapi_superset/superset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="&lt;Fastapi router 구성3&gt;&#10;- 파일명 바꿈">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/Activate.ps1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/activate" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/activate.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/deactivate.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/fastapi.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/httpx.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/pip.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/pip3.11.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/pip3.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/python.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/pythonw.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/Scripts/uvicorn.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi_superset/venv/pyvenv.cfg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -260,7 +250,23 @@
       <option name="project" value="LOCAL" />
       <updated>1729057837801</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="&lt;Fastapi router 구성2&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록&#10;- 롤백된 거 되돌림..">
+      <option name="closed" value="true" />
+      <created>1729058346364</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1729058346364</updated>
+    </task>
+    <task id="LOCAL-00017" summary="&lt;Fastapi router 구성3&gt;&#10;- 파일명 바꿈">
+      <option name="closed" value="true" />
+      <created>1729058467624</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1729058467624</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -301,6 +307,8 @@
     <MESSAGE value="&lt;FastAPI MVC 패턴3&gt;&#10;FastAPI와 Superset 환경 구축&#10;- 파일 구성 정리" />
     <MESSAGE value="&lt;Vue 환경 구축 1&gt;&#10;FastAPI router와 Vue.js, Node.js 환경 구축" />
     <MESSAGE value="&lt;Fastapi router 구성1&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록" />
-    <option name="LAST_COMMIT_MESSAGE" value="&lt;Fastapi router 구성1&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록" />
+    <MESSAGE value="&lt;Fastapi router 구성2&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록&#10;- 롤백된 거 되돌림.." />
+    <MESSAGE value="&lt;Fastapi router 구성3&gt;&#10;- 파일명 바꿈" />
+    <option name="LAST_COMMIT_MESSAGE" value="&lt;Fastapi router 구성3&gt;&#10;- 파일명 바꿈" />
   </component>
 </project>
