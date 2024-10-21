@@ -6,6 +6,7 @@ from superset import get_superset_data  # Superset API 호출 함수 임포트
 
 import pkgutil
 import importlib
+import aiomysql
 
 app = FastAPI()
 
@@ -63,3 +64,57 @@ async def superset_data():
 @app.get("/test")
 async def test_endpoint():
     return {"message": "Hello from FastAPI!"}
+
+
+
+# MySQL 연결 설정 함수
+async def get_db_connection():
+    """MySQL 연결 설정 함수"""
+    return await aiomysql.connect(
+        host='opyter.iptime.org',
+        user='bigdata_busan_3',        # MySQL 사용자 이름
+        password='busan12345678*',    # MySQL 비밀번호
+        db='web',                    # 데이터베이스 이름
+        port=3306
+    )
+
+
+
+# employees 테이블의 데이터를 가져오는 엔드포인트 추가
+@app.get("/user-management/user-list")
+async def get_employees():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                "SELECT employees.name, employees.employee_no, employees.position, employees.last_login FROM employees")
+            result = await cursor.fetchall()
+            conn.close()
+
+            # 데이터 가공: 객체 배열로 변환
+            employees = [
+                {
+                    "name": row[0],
+                    "employeeNo": row[1],
+                    "position": row[2],
+                    "lastLogin": row[3]
+                }
+                for row in result
+            ]
+
+            return {"employees": employees}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# user_group 테이블의 데이터를 가져오는 엔드포인트 추가
+@app.get("/user-management/user-groups")
+async def get_user_groups():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT * FROM user_group")
+            user_groups = await cursor.fetchall()
+            conn.close()
+            return {"user_groups": user_groups}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
