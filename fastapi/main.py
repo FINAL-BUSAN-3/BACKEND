@@ -107,14 +107,56 @@ async def get_employees():
         raise HTTPException(status_code=500, detail=str(e))
 
 # user_group 테이블의 데이터를 가져오는 엔드포인트 추가
-@app.get("/user-management/user-groups")
+@app.get("/user-management/group-list")
 async def get_user_groups():
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT * FROM user_group")
+            await cursor.execute("SELECT * FROM user_groups")
             user_groups = await cursor.fetchall()
             conn.close()
             return {"user_groups": user_groups}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# 주가 데이터 불러오기
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
+
+# app = FastAPI()
+stock_data = []
+
+def get_naver_stock_price(symbol: str):
+    try:
+        url = f"https://finance.naver.com/item/main.nhn?code={symbol}"
+        response = requests.get(url)
+        response.raise_for_status()  # HTTP 오류 체크
+        soup = BeautifulSoup(response.text, 'html.parser')
+        price_element = soup.select_one('.no_today .blind')
+        if price_element is None:
+            raise ValueError("주가 정보를 찾을 수 없습니다.")
+        price = price_element.text
+        return price
+    except Exception as e:
+        print(f"Error fetching stock price: {e}")
+        return None
+
+@app.get("/stock-history/{symbol}")
+async def fetch_stock_history(symbol: str):
+    global stock_data
+    price = get_naver_stock_price(symbol)
+    if price:
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # 중복 데이터 방지: 마지막으로 저장된 가격과 시간이 같은 경우 추가하지 않음
+        if not stock_data or stock_data[-1]["price"] != float(price.replace(",", "")):
+            stock_data.append({"time": timestamp, "price": float(price.replace(",", ""))})
+        # 오래된 데이터 제거: 마지막 100개의 데이터만 유지
+        if len(stock_data) > 100:
+            stock_data = stock_data[-100:]
+    return stock_data[-10:]  # 마지막 10개 데이터만 반환
+
+
+
+
