@@ -7,11 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="&lt;Fastapi router 구성4&gt;&#10;- CORS 설정에서 allow_origins 수정:&#10;allow_origins=[&quot;*&quot;]">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="수정중1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi/routers/user_management.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/routers/user_management.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -277,7 +275,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729058996535</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="수정중1">
+      <option name="closed" value="true" />
+      <created>1729582763359</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1729582763359</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -321,6 +327,7 @@
     <MESSAGE value="&lt;Fastapi router 구성2&gt;&#10;- FastAPI 서버에서 모든 엔드포인트가 모듈화된 파일에 정의되어 깔끔하게 관리&#10;- 라우터를 자동으로 등록&#10;- 롤백된 거 되돌림.." />
     <MESSAGE value="&lt;Fastapi router 구성3&gt;&#10;- 파일명 바꿈" />
     <MESSAGE value="&lt;Fastapi router 구성4&gt;&#10;- CORS 설정에서 allow_origins 수정:&#10;allow_origins=[&quot;*&quot;]" />
-    <option name="LAST_COMMIT_MESSAGE" value="&lt;Fastapi router 구성4&gt;&#10;- CORS 설정에서 allow_origins 수정:&#10;allow_origins=[&quot;*&quot;]" />
+    <MESSAGE value="수정중1" />
+    <option name="LAST_COMMIT_MESSAGE" value="수정중1" />
   </component>
 </project>

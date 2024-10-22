@@ -7,6 +7,7 @@ from superset import get_superset_data  # Superset API 호출 함수 임포트
 import pkgutil
 import importlib
 import aiomysql
+from pydantic import BaseModel  # BaseModel 임포트 추가
 
 app = FastAPI()
 
@@ -120,7 +121,7 @@ async def get_user_groups():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# 주가 데이터 불러오기
+############ 주가 데이터 ###############
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -157,6 +158,97 @@ async def fetch_stock_history(symbol: str):
             stock_data = stock_data[-100:]
     return stock_data[-10:]  # 마지막 10개 데이터만 반환
 
+###############사용자, 권한 추가##############
+# 사용자 데이터 추가를 위한 Pydantic 모델
+class User(BaseModel):
+    name: str
+    employeeNo: int
+    password: str
+    role: str
+
+# 권한 데이터 추가를 위한 Pydantic 모델
+class Group(BaseModel):
+    groupName: str
+    groupDescription: str
+
+# CORS 설정
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# MySQL 연결 설정 함수
+async def get_db_connection():
+    """MySQL 연결 설정 함수"""
+    return await aiomysql.connect(
+        host='opyter.iptime.org',
+        user='bigdata_busan_3',
+        password='busan12345678*',
+        db='web',
+        port=3306
+    )
+
+# 사용자 추가 엔드포인트
+@app.post("/user-management/user-add")
+async def add_user(user: User):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                "INSERT INTO employees (name, employee_no, position) VALUES (%s, %s, %s)",
+                (user.name, user.employeeNo, user.role)
+            )
+            await conn.commit()
+            conn.close()
+            return {"message": "사용자가 성공적으로 추가되었습니다."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 권한 추가 엔드포인트
+@app.post("/user-management/group-add")
+async def add_group(group: Group):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                "INSERT INTO user_groups (group_name, description) VALUES (%s, %s)",
+                (group.groupName, group.groupDescription)
+            )
+            await conn.commit()
+            conn.close()
+            return {"message": "권한이 성공적으로 추가되었습니다."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+########### 삭제 #############
+# 사용자 삭제 엔드포인트
+@app.delete("/user-management/user-delete/{employee_no}")
+async def delete_user(employee_no: int):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("DELETE FROM employees WHERE employee_no = %s", (employee_no,))
+            await conn.commit()
+            conn.close()
+            return {"message": "사용자가 성공적으로 삭제되었습니다."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 권한 삭제 엔드포인트
+@app.delete("/user-management/group-delete/{group_name}")
+async def delete_group(group_name: str):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("DELETE FROM user_groups WHERE group_name = %s", (group_name,))
+            await conn.commit()
+            conn.close()
+            return {"message": "권한이 성공적으로 삭제되었습니다."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
