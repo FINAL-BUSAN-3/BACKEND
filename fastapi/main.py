@@ -250,5 +250,21 @@ async def delete_group(group_name: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# models 테이블의 데이터를 가져오는 엔드포인트 추가
+@app.get("/model-deployment/model-select")
+async def get_model_file_names():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT model_file_name FROM models")
+            result = await cursor.fetchall()
+            conn.close()
+
+            # 데이터 가공: 모델 파일 이름 목록 생성
+            model_file_names = [row[0] for row in result] if result else []
+
+            return {"model_file_names": model_file_names}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
