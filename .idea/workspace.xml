@@ -7,7 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="수정중1">
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="사용자 관리 페이지 - 사용자 추가, 권한 추가 기능 구현">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
     </list>
@@ -38,12 +38,12 @@
     &quot;assignee&quot;: &quot;Basil-Pesto-Pizza&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/FINAL-BUSAN-3/BACKEND.git&quot;,
-    &quot;accountId&quot;: &quot;e159f07f-e5a3-4d64-8423-1a3033148387&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/FINAL-BUSAN-3/BACKEND.git",
+    "accountId": "fbb95976-d964-4e97-8171-79f3d4c5aab2"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -283,7 +283,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729582763359</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="사용자 관리 페이지 - 사용자 추가, 권한 추가 기능 구현">
+      <option name="closed" value="true" />
+      <created>1729586846599</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1729586846599</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -328,6 +336,7 @@
     <MESSAGE value="&lt;Fastapi router 구성3&gt;&#10;- 파일명 바꿈" />
     <MESSAGE value="&lt;Fastapi router 구성4&gt;&#10;- CORS 설정에서 allow_origins 수정:&#10;allow_origins=[&quot;*&quot;]" />
     <MESSAGE value="수정중1" />
-    <option name="LAST_COMMIT_MESSAGE" value="수정중1" />
+    <MESSAGE value="사용자 관리 페이지 - 사용자 추가, 권한 추가 기능 구현" />
+    <option name="LAST_COMMIT_MESSAGE" value="사용자 관리 페이지 - 사용자 추가, 권한 추가 기능 구현" />
   </component>
 </project>
