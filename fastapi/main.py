@@ -250,6 +250,58 @@ async def delete_group(group_name: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+################### user-detail ####################
+from pydantic import BaseModel
+
+# 사용자 업데이트를 위한 Pydantic 모델
+class UpdateUser(BaseModel):
+    id: int
+    position: str
+
+# 사용자 정보 업데이트 엔드포인트 추가
+@app.put("/user-management/user-detail/{user_id}")
+async def update_user_detail(user_id: int, user: UpdateUser):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            # 사용자의 직위(position) 업데이트
+            await cursor.execute(
+                "UPDATE employees SET position = %s WHERE employee_no = %s",
+                (user.position, user_id)
+            )
+            await conn.commit()
+            conn.close()
+            return {"message": "사용자 정보가 성공적으로 업데이트되었습니다."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 사용자 정보를 가져오는 엔드포인트 추가
+@app.get("/user-management/user-detail/{user_id}")
+async def get_user_detail(user_id: int):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                "SELECT name, employee_no, position, last_login FROM employees WHERE employee_no = %s", (user_id,)
+            )
+            result = await cursor.fetchone()
+            conn.close()
+
+            if result:
+                user = {
+                    "name": result[0],
+                    "employeeNo": result[1],
+                    "position": result[2],
+                    "lastLogin": result[3]
+                }
+                return user
+            else:
+                raise HTTPException(status_code=404, detail="User not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # models 테이블의 데이터를 가져오는 엔드포인트 추가
 @app.get("/model-deployment/model-select")
 async def get_model_file_names():
@@ -266,5 +318,3 @@ async def get_model_file_names():
             return {"model_file_names": model_file_names}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
