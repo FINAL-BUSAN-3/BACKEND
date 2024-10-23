@@ -8,6 +8,7 @@ import pkgutil
 import importlib
 import aiomysql
 from pydantic import BaseModel  # BaseModel 임포트 추가
+from typing import List
 
 app = FastAPI()
 
@@ -81,7 +82,7 @@ async def get_db_connection():
 
 
 
-# employees 테이블의 데이터를 가져오는 엔드포인트 추가
+# employees 테이블의 데이터를 가져오는 엔드포인트
 @app.get("/user-management/user-list")
 async def get_employees():
     try:
@@ -95,6 +96,7 @@ async def get_employees():
             # 데이터 가공: 객체 배열로 변환
             employees = [
                 {
+                    "id": row[0],  # 고유 ID 사용
                     "name": row[0],
                     "employeeNo": row[1],
                     "position": row[2],
@@ -107,28 +109,30 @@ async def get_employees():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# user_group 테이블의 데이터를 가져오는 엔드포인트 추가
 @app.get("/user-management/group-list")
 async def get_user_groups():
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT * FROM user_groups")
+            await cursor.execute("SELECT id, group_name, description FROM user_groups")
             user_groups = await cursor.fetchall()
-            conn.close()
-            return {"user_groups": user_groups}
+        conn.close()
+        return {"user_groups": user_groups}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-############ 주가 데이터 ###############
+
+############ 주가 데이터 ##############
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 # app = FastAPI()
-stock_data = []
-
+stock_data_map = {
+    "005380": [],  # 현대차 주가 데이터
+    "000270": []   # 기아차 주가 데이터
+}
 def get_naver_stock_price(symbol: str):
     try:
         url = f"https://finance.naver.com/item/main.nhn?code={symbol}"
@@ -146,17 +150,17 @@ def get_naver_stock_price(symbol: str):
 
 @app.get("/stock-history/{symbol}")
 async def fetch_stock_history(symbol: str):
-    global stock_data
+    global stock_data_map
     price = get_naver_stock_price(symbol)
     if price:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # 중복 데이터 방지: 마지막으로 저장된 가격과 시간이 같은 경우 추가하지 않음
-        if not stock_data or stock_data[-1]["price"] != float(price.replace(",", "")):
-            stock_data.append({"time": timestamp, "price": float(price.replace(",", ""))})
+        if not stock_data_map[symbol] or stock_data_map[symbol][-1]["price"] != float(price.replace(",", "")):
+            stock_data_map[symbol].append({"time": timestamp, "price": float(price.replace(",", ""))})
         # 오래된 데이터 제거: 마지막 100개의 데이터만 유지
-        if len(stock_data) > 100:
-            stock_data = stock_data[-100:]
-    return stock_data[-10:]  # 마지막 10개 데이터만 반환
+        if len(stock_data_map[symbol]) > 100:
+            stock_data_map[symbol] = stock_data_map[symbol][-100:]
+    return stock_data_map[symbol][-10:]  # 마지막 10개 데이터만 반환
 
 ###############사용자, 권한 추가##############
 # 사용자 데이터 추가를 위한 Pydantic 모델
@@ -168,25 +172,48 @@ class User(BaseModel):
 
 # 권한 데이터 추가를 위한 Pydantic 모델
 class Group(BaseModel):
-    groupName: str
-    groupDescription: str
+    group_name: str
+    description: str
 
 
 # 사용자 추가 엔드포인트
+from fastapi import HTTPException
+
+
 @app.post("/user-management/user-add")
 async def add_user(user: User):
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
+            # 동일한 employeeNo가 있는지 확인
+            await cursor.execute(
+                "SELECT COUNT(*) FROM employees WHERE employee_no = %s", (user.employeeNo,)
+            )
+            (count_employee,) = await cursor.fetchone()
+
+            # 동일한 name이 있는지 확인
+            await cursor.execute(
+                "SELECT COUNT(*) FROM employees WHERE name = %s", (user.name,)
+            )
+            (count_name,) = await cursor.fetchone()
+
+            if count_employee > 0:
+                raise HTTPException(status_code=400, detail="이미 존재하는 사번입니다.")
+
+            if count_name > 0:
+                raise HTTPException(status_code=400, detail="이미 존재하는 이름입니다.")
+
+            # 중복되지 않은 경우에만 추가
             await cursor.execute(
                 "INSERT INTO employees (name, employee_no, position) VALUES (%s, %s, %s)",
                 (user.name, user.employeeNo, user.role)
             )
             await conn.commit()
-            conn.close()
-            return {"message": "사용자가 성공적으로 추가되었습니다."}
+        conn.close()
+        return {"message": "사용자가 성공적으로 추가되었습니다."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # 권한 추가 엔드포인트
 @app.post("/user-management/group-add")
@@ -196,7 +223,7 @@ async def add_group(group: Group):
         async with conn.cursor() as cursor:
             await cursor.execute(
                 "INSERT INTO user_groups (group_name, description) VALUES (%s, %s)",
-                (group.groupName, group.groupDescription)
+                (group.group_name, group.description)  # 수정: groupName -> group_name, groupDescription -> description
             )
             await conn.commit()
             conn.close()
@@ -219,12 +246,12 @@ async def delete_user(employee_no: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 # 권한 삭제 엔드포인트
-@app.delete("/user-management/group-delete/{group_name}")
-async def delete_group(group_name: str):
+@app.delete("/user-management/group-delete/{group_id}")
+async def delete_group(group_id: int):
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
-            await cursor.execute("DELETE FROM user_groups WHERE group_name = %s", (group_name,))
+            await cursor.execute("DELETE FROM user_groups WHERE id = %s", (group_id,))
             await conn.commit()
             conn.close()
             return {"message": "권한이 성공적으로 삭제되었습니다."}
@@ -299,3 +326,41 @@ async def get_model_file_names():
             return {"model_file_names": model_file_names}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+############### HD_sales와 KIA_sales 데이터 엔드포인트 ###############
+
+class SalesData(BaseModel):
+    year: str
+    count: int
+
+@app.get("/sales/hd", response_model=List[SalesData])
+async def get_hd_sales():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT year, count FROM HD_sales ORDER BY year ASC")
+            result = await cursor.fetchall()
+            conn.close()
+
+            hd_sales = [{"year": row[0], "count": row[1]} for row in result]
+            return hd_sales
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/sales/kia", response_model=List[SalesData])
+async def get_kia_sales():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT year, count FROM KIA_sales ORDER BY year ASC")
+            result = await cursor.fetchall()
+            conn.close()
+
+            kia_sales = [{"year": row[0], "count": row[1]} for row in result]
+            return kia_sales
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
