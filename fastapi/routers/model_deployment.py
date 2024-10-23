@@ -14,9 +14,9 @@ async def process_select():
 async def model_insert():
     return {"message": "Model inserted"}
 
-@router.get("/model-select")
-async def model_select():
-    return {"message": "Model selected"}
+# @router.get("/model-select")
+# async def model_select():
+#     return {"message": "Model selected"}
 
 @router.get("/model-detail")
 async def model_detail():
