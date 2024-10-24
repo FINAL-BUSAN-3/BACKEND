@@ -34,9 +34,6 @@ async def group_search():
 async def group():
     return {"message": "Group data"}
 
-# @router.get("/group-list")
-# async def group_list():
-#     return {"message": "Group list"}
 
 @router.get("/group-add")
 async def group_add():

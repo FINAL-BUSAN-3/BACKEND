@@ -188,21 +188,7 @@ async def add_user(user: User):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# 권한 추가 엔드포인트
-@app.post("/user-management/group-add")
-async def add_group(group: Group):
-    try:
-        conn = await get_db_connection()
-        async with conn.cursor() as cursor:
-            await cursor.execute(
-                "INSERT INTO user_groups (group_name, description) VALUES (%s, %s)",
-                (group.groupName, group.groupDescription)
-            )
-            await conn.commit()
-            conn.close()
-            return {"message": "권한이 성공적으로 추가되었습니다."}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+
 
 ########### 삭제 #############
 # 사용자 삭제 엔드포인트
@@ -289,7 +275,7 @@ async def get_model_file_names():
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT model_file_name FROM models")
+            await cursor.execute("SELECT model_info_id FROM model_info")
             result = await cursor.fetchall()
             conn.close()
 
@@ -299,3 +285,29 @@ async def get_model_file_names():
             return {"model_file_names": model_file_names}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# 권한 삭제 엔드포인트
+@app.delete("/model-deployment/model-detail")
+async def delete_group(group_name: str):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("""
+            SELECT mi.model_name,
+                mi.model_version,
+                mi.python_version,
+                mi.library,
+                mi.model_info,
+                mi.deployment_date,
+                mi.loss,
+                mi.accuracy
+            FROM model_info mi
+                     JOIN model_use mu ON mi.model_info_id = mu.model_use_id
+            WHERE mu.model_use_state = 1            
+            """)
+            await conn.commit()
+            conn.close()
+            return {"message": "권한이 성공적으로 삭제되었습니다."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
