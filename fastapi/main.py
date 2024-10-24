@@ -167,8 +167,7 @@ async def fetch_stock_history(symbol: str):
 class User(BaseModel):
     name: str
     employeeNo: int
-
-    role: str
+    position: str
 
 # 권한 데이터 추가를 위한 Pydantic 모델
 class Group(BaseModel):
@@ -176,8 +175,6 @@ class Group(BaseModel):
     description: str
 
 
-# 사용자 추가 엔드포인트
-from fastapi import HTTPException
 
 
 @app.post("/user-management/user-add")
@@ -265,9 +262,15 @@ from pydantic import BaseModel
 # 사용자 업데이트를 위한 Pydantic 모델
 class UpdateUser(BaseModel):
     id: int
-    position: str
+    roles: List[str]  # 사용자의 여러 권한을 처리하기 위해 roles 리스트 사용
 
 # 사용자 정보 업데이트 엔드포인트 추가
+class UpdateUser(BaseModel):
+    id: int
+    position: str  # 사용자의 단일 권한을 처리하기 위해 position 필드 사용
+
+
+# 사용자 정보 업데이트 엔드포인트 수정
 @app.put("/user-management/user-detail/{user_id}")
 async def update_user_detail(user_id: int, user: UpdateUser):
     try:
@@ -284,28 +287,33 @@ async def update_user_detail(user_id: int, user: UpdateUser):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# 사용자 정보를 가져오는 엔드포인트 추가
+
+# 사용자 정보를 가져오는 엔드포인트 수정
 @app.get("/user-management/user-detail/{user_id}")
 async def get_user_detail(user_id: int):
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
+            # 기본 사용자 정보 가져오기
             await cursor.execute(
                 "SELECT name, employee_no, position, last_login FROM employees WHERE employee_no = %s", (user_id,)
             )
-            result = await cursor.fetchone()
-            conn.close()
+            user_result = await cursor.fetchone()
 
-            if result:
-                user = {
-                    "name": result[0],
-                    "employeeNo": result[1],
-                    "position": result[2],
-                    "lastLogin": result[3]
-                }
-                return user
-            else:
+            # 사용자 정보가 없을 때 처리
+            if not user_result:
                 raise HTTPException(status_code=404, detail="User not found")
+
+            # 사용자 객체 생성
+            user = {
+                "name": user_result[0],
+                "employeeNo": user_result[1],
+                "position": user_result[2],  # position 필드를 사용
+                "lastLogin": user_result[3]
+            }
+
+            conn.close()
+            return user
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -360,6 +368,32 @@ async def get_kia_sales():
             return kia_sales
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@app.put("/user-management/user-detail/{user_id}")
+async def update_user_detail(user_id: int, user: UpdateUser):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            # 기존 권한을 삭제한 후 새로운 권한으로 대체
+            await cursor.execute("DELETE FROM user_roles WHERE employee_no = %s", (user_id,))
+            for role in user.roles:
+                await cursor.execute(
+                    "INSERT INTO user_roles (employee_no, role) VALUES (%s, %s)", (user_id, role)
+                )
+            await conn.commit()
+            conn.close()
+            return {"message": "사용자 권한이 성공적으로 업데이트되었습니다."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
+
+
+
 
 
 
