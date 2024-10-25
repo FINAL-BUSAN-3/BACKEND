@@ -9,6 +9,12 @@ import importlib
 import aiomysql
 from pydantic import BaseModel  # BaseModel 임포트 추가
 from typing import List
+import logging
+
+# 로깅 설정 추가
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 app = FastAPI()
 
@@ -123,46 +129,9 @@ async def get_user_groups():
 
 
 
-############ 주가 데이터 ##############
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime
 
-# app = FastAPI()
-stock_data_map = {
-    "005380": [],  # 현대차 주가 데이터
-    "000270": []   # 기아차 주가 데이터
-}
-def get_naver_stock_price(symbol: str):
-    try:
-        url = f"https://finance.naver.com/item/main.nhn?code={symbol}"
-        response = requests.get(url)
-        response.raise_for_status()  # HTTP 오류 체크
-        soup = BeautifulSoup(response.text, 'html.parser')
-        price_element = soup.select_one('.no_today .blind')
-        if price_element is None:
-            raise ValueError("주가 정보를 찾을 수 없습니다.")
-        price = price_element.text
-        return price
-    except Exception as e:
-        print(f"Error fetching stock price: {e}")
-        return None
 
-@app.get("/stock-history/{symbol}")
-async def fetch_stock_history(symbol: str):
-    global stock_data_map
-    price = get_naver_stock_price(symbol)
-    if price:
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # 중복 데이터 방지: 마지막으로 저장된 가격과 시간이 같은 경우 추가하지 않음
-        if not stock_data_map[symbol] or stock_data_map[symbol][-1]["price"] != float(price.replace(",", "")):
-            stock_data_map[symbol].append({"time": timestamp, "price": float(price.replace(",", ""))})
-        # 오래된 데이터 제거: 마지막 100개의 데이터만 유지
-        if len(stock_data_map[symbol]) > 100:
-            stock_data_map[symbol] = stock_data_map[symbol][-100:]
-    return stock_data_map[symbol][-10:]  # 마지막 10개 데이터만 반환
-
-###############사용자, 권한 추가##############
+################################ 사용자, 권한 추가 #######################################
 # 사용자 데이터 추가를 위한 Pydantic 모델
 class User(BaseModel):
     name: str
@@ -173,9 +142,6 @@ class User(BaseModel):
 class Group(BaseModel):
     group_name: str
     description: str
-
-
-
 
 @app.post("/user-management/user-add")
 async def add_user(user: User):
@@ -228,7 +194,7 @@ async def add_group(group: Group):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-########### 삭제 #############
+############################ 삭제 ###################################
 # 사용자 삭제 엔드포인트
 @app.delete("/user-management/user-delete/{employee_no}")
 async def delete_user(employee_no: int):
@@ -256,7 +222,7 @@ async def delete_group(group_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-################### user-detail ####################
+###################### 상세정보 #######################
 from pydantic import BaseModel
 
 # 사용자 업데이트를 위한 Pydantic 모델
@@ -288,34 +254,53 @@ async def update_user_detail(user_id: int, user: UpdateUser):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# 사용자 정보를 가져오는 엔드포인트 수정
+# 상세 정보를 가져오는 엔드포인트 수정
 @app.get("/user-management/user-detail/{user_id}")
 async def get_user_detail(user_id: int):
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
-            # 기본 사용자 정보 가져오기
             await cursor.execute(
                 "SELECT name, employee_no, position, last_login FROM employees WHERE employee_no = %s", (user_id,)
             )
             user_result = await cursor.fetchone()
 
-            # 사용자 정보가 없을 때 처리
             if not user_result:
                 raise HTTPException(status_code=404, detail="User not found")
 
-            # 사용자 객체 생성
+            # 권한을 ';'로 나눠 리스트로 반환
             user = {
                 "name": user_result[0],
                 "employeeNo": user_result[1],
-                "position": user_result[2],  # position 필드를 사용
-                "lastLogin": user_result[3]
+                "position": user_result[2],
+                "lastLogin": user_result[3],
+                "roles": user_result[2].split(';') if user_result[2] else []
             }
 
             conn.close()
             return user
     except Exception as e:
+        print(f"Error fetching user detail: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# @app.put("/user-management/user-detail/{user_id}")
+# async def update_user_detail(user_id: int, user: UpdateUser):
+#     try:
+#         conn = await get_db_connection()
+#         async with conn.cursor() as cursor:
+#             # position 값을 사용하여 권한을 업데이트
+#             new_position = user.roles[0] if user.roles else None
+#             print(f"Updating position for user {user_id} to {new_position}")  # 로그 추가
+#             await cursor.execute(
+#                 "UPDATE employees SET position = %s WHERE employee_no = %s",
+#                 (new_position, user_id)
+#             )
+#             await conn.commit()
+#             conn.close()
+#             return {"message": "사용자 정보가 성공적으로 업데이트되었습니다."}
+#     except Exception as e:
+#         print(f"Error updating user detail: {e}")  # 에러 로그 추가
+#         raise HTTPException(status_code=500, detail=str(e))
 
 
 # models 테이블의 데이터를 가져오는 엔드포인트 추가
@@ -335,8 +320,50 @@ async def get_model_file_names():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-############### HD_sales와 KIA_sales 데이터 엔드포인트 ###############
 
+
+
+
+########################################## 주가 데이터 ##########################################
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
+
+# app = FastAPI()
+stock_data_map = {
+    "005380": [],  # 현대차 주가 데이터
+    "000270": []   # 기아차 주가 데이터
+}
+def get_naver_stock_price(symbol: str):
+    try:
+        url = f"https://finance.naver.com/item/main.nhn?code={symbol}"
+        response = requests.get(url)
+        response.raise_for_status()  # HTTP 오류 체크
+        soup = BeautifulSoup(response.text, 'html.parser')
+        price_element = soup.select_one('.no_today .blind')
+        if price_element is None:
+            raise ValueError("주가 정보를 찾을 수 없습니다.")
+        price = price_element.text
+        return price
+    except Exception as e:
+        print(f"Error fetching stock price: {e}")
+        return None
+
+@app.get("/stock-history/{symbol}")
+async def fetch_stock_history(symbol: str):
+    global stock_data_map
+    price = get_naver_stock_price(symbol)
+    if price:
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # 중복 데이터 방지: 마지막으로 저장된 가격과 시간이 같은 경우 추가하지 않음
+        if not stock_data_map[symbol] or stock_data_map[symbol][-1]["price"] != float(price.replace(",", "")):
+            stock_data_map[symbol].append({"time": timestamp, "price": float(price.replace(",", ""))})
+        # 오래된 데이터 제거: 마지막 100개의 데이터만 유지
+        if len(stock_data_map[symbol]) > 100:
+            stock_data_map[symbol] = stock_data_map[symbol][-100:]
+    return stock_data_map[symbol][-10:]  # 마지막 10개 데이터만 반환
+
+############### HD_sales와 KIA_sales 데이터 엔드포인트 ###############
 class SalesData(BaseModel):
     year: str
     count: int
@@ -368,28 +395,6 @@ async def get_kia_sales():
             return kia_sales
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-
-@app.put("/user-management/user-detail/{user_id}")
-async def update_user_detail(user_id: int, user: UpdateUser):
-    try:
-        conn = await get_db_connection()
-        async with conn.cursor() as cursor:
-            # 기존 권한을 삭제한 후 새로운 권한으로 대체
-            await cursor.execute("DELETE FROM user_roles WHERE employee_no = %s", (user_id,))
-            for role in user.roles:
-                await cursor.execute(
-                    "INSERT INTO user_roles (employee_no, role) VALUES (%s, %s)", (user_id, role)
-                )
-            await conn.commit()
-            conn.close()
-            return {"message": "사용자 권한이 성공적으로 업데이트되었습니다."}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-
 
 
 
