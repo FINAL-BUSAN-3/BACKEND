@@ -169,13 +169,14 @@ async def add_user(user: User):
             # 중복되지 않은 경우에만 추가
             await cursor.execute(
                 "INSERT INTO employees (name, employee_no, position) VALUES (%s, %s, %s)",
-                (user.name, user.employeeNo, user.role)
+                (user.name, user.employeeNo, user.position)  # 'role'이 아닌 'position'으로 변경
             )
             await conn.commit()
         conn.close()
         return {"message": "사용자가 성공적으로 추가되었습니다."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 # 권한 추가 엔드포인트
