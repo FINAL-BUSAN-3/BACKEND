@@ -7,13 +7,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="사용자 관리, 경영지표 - 사용자 삭제, 상세정보, 주가, 월간 생산량">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/24__10__16___2_48__________1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/24__10__16___2_54__________1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/24__10__16__오후_2_48,_체크아웃_전에_커밋되지_않은_변경_내용_[변경]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/24__10__16__오후_2_54,_체크아웃_전에_커밋되지_않은_변경_내용_[변경]1/shelved.patch" beforeDir="false" />
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="사용자 관리, 경영지표 - 날라간거 복구 완료..">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asd.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hsh.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ksj.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lks_test.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/och.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/shr.md" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +68,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;EO3-92-Backend-UserManagement1&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/KFQ/Desktop/git/BACKEND&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/kfq/Desktop/git/BACKEND&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
@@ -76,11 +78,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\kfq\Desktop\git\BACKEND" />
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi_superset\routers" />
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND\controllers" />
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND\views" />
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND\models" />
-      <recent name="C:\Users\KFQ\Desktop\git\BACKEND" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\KFQ\Desktop\git\BACKEND\fastapi_superset\routers" />
@@ -311,7 +313,31 @@
       <option name="project" value="LOCAL" />
       <updated>1729672851002</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="사용자 관리, 경영지표 - 상세정보 날라감.. 수정필요">
+      <option name="closed" value="true" />
+      <created>1729759209129</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1729759209129</updated>
+    </task>
+    <task id="LOCAL-00024" summary="사용자 관리, 경영지표 - 상세정보 수정 완료">
+      <option name="closed" value="true" />
+      <created>1729842446376</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1729842446376</updated>
+    </task>
+    <task id="LOCAL-00025" summary="사용자 관리, 경영지표 - 날라간거 복구 완료..">
+      <option name="closed" value="true" />
+      <created>1729843554111</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1729843554111</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -358,6 +384,9 @@
     <MESSAGE value="수정중1" />
     <MESSAGE value="사용자 관리 페이지 - 사용자 추가, 권한 추가 기능 구현" />
     <MESSAGE value="사용자 관리, 경영지표 - 사용자 삭제, 상세정보, 주가, 월간 생산량" />
-    <option name="LAST_COMMIT_MESSAGE" value="사용자 관리, 경영지표 - 사용자 삭제, 상세정보, 주가, 월간 생산량" />
+    <MESSAGE value="사용자 관리, 경영지표 - 상세정보 날라감.. 수정필요" />
+    <MESSAGE value="사용자 관리, 경영지표 - 상세정보 수정 완료" />
+    <MESSAGE value="사용자 관리, 경영지표 - 날라간거 복구 완료.." />
+    <option name="LAST_COMMIT_MESSAGE" value="사용자 관리, 경영지표 - 날라간거 복구 완료.." />
   </component>
 </project>

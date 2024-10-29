@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Depends #로그인
 
 from controllers import test_controller  # 필요에 따라 적절한 컨트롤러 경로로 수정하세요.
 from superset import get_superset_data  # Superset API 호출 함수 임포트
@@ -10,6 +11,12 @@ import aiomysql
 from pydantic import BaseModel  # BaseModel 임포트 추가
 from typing import List
 import logging
+
+#비밀번호 암호화를 위한 라이브러리
+from passlib.context import CryptContext
+from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
 
 # 로깅 설정 추가
 logging.basicConfig(level=logging.INFO)
@@ -22,7 +29,7 @@ app = FastAPI()
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:8080"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -42,11 +49,12 @@ def register_routers(app):
                     prefix=f"/{module_name.replace('_', '-')}",
                     tags=[module_name.capitalize()]
                 )
-                print(f"Registered router for {full_module_name}")
+                print(f"Registered router for {full_module_name}")  # 경로 등록 확인
         except ImportError as e:
             print(f"Error importing {full_module_name}: {e}")
 
     app.include_router(router)
+
 
 # 컨트롤러의 라우터를 애플리케이션에 포함
 app.include_router(test_controller.router)
@@ -126,8 +134,6 @@ async def get_user_groups():
         return {"user_groups": user_groups}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
 
 
 
@@ -224,12 +230,10 @@ async def delete_group(group_id: int):
 
 
 ###################### 상세정보 #######################
-from pydantic import BaseModel
-
 # 사용자 업데이트를 위한 Pydantic 모델
-class UpdateUser(BaseModel):
-    id: int
-    roles: List[str]  # 사용자의 여러 권한을 처리하기 위해 roles 리스트 사용
+# class UpdateUser(BaseModel):
+#     id: int
+#     roles: List[str]  # 사용자의 여러 권한을 처리하기 위해 roles 리스트 사용
 
 # 사용자 정보 업데이트 엔드포인트 추가
 class UpdateUser(BaseModel):
@@ -330,7 +334,6 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-# app = FastAPI()
 stock_data_map = {
     "005380": [],  # 현대차 주가 데이터
     "000270": []   # 기아차 주가 데이터
@@ -350,19 +353,28 @@ def get_naver_stock_price(symbol: str):
         print(f"Error fetching stock price: {e}")
         return None
 
+
 @app.get("/stock-history/{symbol}")
 async def fetch_stock_history(symbol: str):
     global stock_data_map
     price = get_naver_stock_price(symbol)
     if price:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # 중복 데이터 방지: 마지막으로 저장된 가격과 시간이 같은 경우 추가하지 않음
-        if not stock_data_map[symbol] or stock_data_map[symbol][-1]["price"] != float(price.replace(",", "")):
-            stock_data_map[symbol].append({"time": timestamp, "price": float(price.replace(",", ""))})
+        current_price = float(price.replace(",", ""))
+
+        # 이전 데이터와 가격 및 시간을 비교하여 동일할 경우 추가하지 않음
+        if stock_data_map[symbol] and stock_data_map[symbol][-1]["price"] == current_price:
+            return stock_data_map[symbol][-10:]  # 마지막 10개 데이터만 반환
+
+        # 주가 변동 여부와 관계없이 데이터 추가
+        stock_data_map[symbol].append({"time": timestamp, "price": current_price})
+
         # 오래된 데이터 제거: 마지막 100개의 데이터만 유지
         if len(stock_data_map[symbol]) > 100:
             stock_data_map[symbol] = stock_data_map[symbol][-100:]
+
     return stock_data_map[symbol][-10:]  # 마지막 10개 데이터만 반환
+
 
 ############### HD_sales와 KIA_sales 데이터 엔드포인트 ###############
 class SalesData(BaseModel):
@@ -398,8 +410,82 @@ async def get_kia_sales():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+################ 로그인 ##################
+# 비밀번호 암호화를 위한 설정
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# 데이터베이스 설정 (예: SQLite 사용)
+DATABASE_URL = "sqlite:///./test.db"
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# 사용자 모델 정의 (데이터베이스 테이블 구조)
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)  # 비밀번호는 해시 형태로 저장
+
+# 데이터베이스 초기화 (테이블 생성)
+Base.metadata.create_all(bind=engine)
+
+# 의존성: 데이터베이스 세션 생성
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# 비밀번호 검증 함수
+def verify_password(plain_password, hashed_password):
+    """사용자가 입력한 비밀번호(평문)와 해시화된 비밀번호를 비교"""
+    return pwd_context.verify(plain_password, hashed_password)
+
+# 비밀번호 해시화 함수
+def hash_password(password):
+    """사용자가 입력한 비밀번호를 해시화하여 저장할 때 사용"""
+    return pwd_context.hash(password)
+
+# 로그인 요청 모델
+class LoginRequest(BaseModel):
+    username: str
+    employee_no: int
+
+# 로그인 엔드포인트
+@app.post("/")
+async def login(request: LoginRequest):
+    conn = await get_db_connection()
+    try:
+        async with conn.cursor() as cursor:
+            print(f"로그인 시도 - username: {request.username}, employee_no: {request.employee_no}")
+            await cursor.execute(
+                "SELECT name, employee_no, position FROM employees WHERE name = %s AND employee_no = %s",
+                (request.username, request.employee_no)
+            )
+            result = await cursor.fetchone()
+            if not result:
+                raise HTTPException(status_code=400, detail="Invalid username or employee number")
+
+            name, employee_no, role = result
+            print(f"로그인 성공 - Role: {role}")  # role이 정확한지 로그로 확인
+            return {"message": "Login successful", "role": role}  # 역할(role) 반환
+    finally:
+        conn.close()
 
 
+################로그아웃#############
+@app.post("/")
+async def logout():
+    """
+    로그아웃 엔드포인트:
+    - 클라이언트의 세션을 종료하거나 쿠키를 삭제합니다.
+    """
+    # 로그아웃 관련 세션 삭제 및 응답 설정
+    response = {"message": "로그아웃되었습니다."}
+    # 여기서 필요한 경우 세션 정보를 삭제하는 로직 추가 가능
+    return response
 
 
 
