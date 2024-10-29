@@ -1,9 +1,9 @@
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Depends #로그인
-
-from controllers import test_controller  # 필요에 따라 적절한 컨트롤러 경로로 수정하세요.
-from superset import get_superset_data  # Superset API 호출 함수 임포트
+from controllers import test_controller  #필요에 따라 적절한 컨트롤러 경로로 수정하세요.
+from superset import get_superset_data  #Superset API 호출 함수 임포트
+from datetime import datetime, timedelta
 
 import pkgutil
 import importlib
@@ -11,6 +11,7 @@ import aiomysql
 from pydantic import BaseModel  # BaseModel 임포트 추가
 from typing import List
 import logging
+import pytz
 
 #비밀번호 암호화를 위한 라이브러리
 from passlib.context import CryptContext
@@ -18,16 +19,11 @@ from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
-from datetime import datetime, timedelta
-import pytz
-
 # 로깅 설정 추가
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 app = FastAPI()
-
 
 # CORS 설정
 app.add_middleware(
@@ -85,7 +81,6 @@ async def test_endpoint():
     return {"message": "Hello from FastAPI!"}
 
 
-
 # MySQL 연결 설정 함수
 async def get_db_connection():
     """MySQL 연결 설정 함수"""
@@ -97,8 +92,7 @@ async def get_db_connection():
         port=3306
     )
 
-
-
+#######################3######### user list #################################33#######
 # employees 테이블의 데이터를 가져오는 엔드포인트
 @app.get("/user-management/user-list")
 async def get_employees():
@@ -129,7 +123,7 @@ async def get_employees():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
+#################################### group list ######################################
 @app.get("/user-management/group-list")
 async def get_user_groups():
     try:
@@ -141,7 +135,6 @@ async def get_user_groups():
         return {"user_groups": user_groups}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 
 ################################ 사용자, 권한 추가 #######################################
@@ -191,9 +184,6 @@ async def add_user(user: User):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
-
-
 # 권한 추가 엔드포인트
 @app.post("/user-management/group-add")
 async def add_group(group: Group):
@@ -210,7 +200,7 @@ async def add_group(group: Group):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-############################ 삭제 ###################################
+########################################## 사용자, 권한 삭제 #################################################
 # 사용자 삭제 엔드포인트
 @app.delete("/user-management/user-delete/{employee_no}")
 async def delete_user(employee_no: int):
@@ -238,17 +228,11 @@ async def delete_group(group_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-###################### 상세정보 #######################
-# 사용자 업데이트를 위한 Pydantic 모델
-# class UpdateUser(BaseModel):
-#     id: int
-#     roles: List[str]  # 사용자의 여러 권한을 처리하기 위해 roles 리스트 사용
-
+####################################### 사용자 상세정보 #######################################
 # 사용자 정보 업데이트 엔드포인트 추가
 class UpdateUser(BaseModel):
     id: int
     position: str  # 사용자의 단일 권한을 처리하기 위해 position 필드 사용
-
 
 # 사용자 정보 업데이트 엔드포인트 수정
 @app.put("/user-management/user-detail/{user_id}")
@@ -297,26 +281,7 @@ async def get_user_detail(user_id: int):
         print(f"Error fetching user detail: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# @app.put("/user-management/user-detail/{user_id}")
-# async def update_user_detail(user_id: int, user: UpdateUser):
-#     try:
-#         conn = await get_db_connection()
-#         async with conn.cursor() as cursor:
-#             # position 값을 사용하여 권한을 업데이트
-#             new_position = user.roles[0] if user.roles else None
-#             print(f"Updating position for user {user_id} to {new_position}")  # 로그 추가
-#             await cursor.execute(
-#                 "UPDATE employees SET position = %s WHERE employee_no = %s",
-#                 (new_position, user_id)
-#             )
-#             await conn.commit()
-#             conn.close()
-#             return {"message": "사용자 정보가 성공적으로 업데이트되었습니다."}
-#     except Exception as e:
-#         print(f"Error updating user detail: {e}")  # 에러 로그 추가
-#         raise HTTPException(status_code=500, detail=str(e))
-
-
+########################################## 모델 ###########################################
 # models 테이블의 데이터를 가져오는 엔드포인트 추가
 @app.get("/model-deployment/model-select")
 async def get_model_file_names():
@@ -333,9 +298,6 @@ async def get_model_file_names():
             return {"model_file_names": model_file_names}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-
 
 
 ########################################## 주가 데이터 ##########################################
@@ -385,7 +347,7 @@ async def fetch_stock_history(symbol: str):
     return stock_data_map[symbol][-10:]  # 마지막 10개 데이터만 반환
 
 
-############### HD_sales와 KIA_sales 데이터 엔드포인트 ###############
+############################### HD_sales와 KIA_sales 데이터 엔드포인트 ##################################
 class SalesData(BaseModel):
     year: str
     count: int
@@ -419,7 +381,7 @@ async def get_kia_sales():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-################ 로그인 ##################
+######################################## 로그인 ############################################
 # 비밀번호 암호화를 위한 설정
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -498,9 +460,7 @@ async def login(request: LoginRequest):
         conn.close()
 
 
-
-
-################로그아웃#############
+######################################### 로그아웃 ###########################################
 @app.post("/")
 async def logout():
     """
@@ -511,7 +471,4 @@ async def logout():
     response = {"message": "로그아웃되었습니다."}
     # 여기서 필요한 경우 세션 정보를 삭제하는 로직 추가 가능
     return response
-
-
-
 

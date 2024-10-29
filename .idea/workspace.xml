@@ -339,7 +339,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730167696409</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="로그인, 로그아웃 기능">
+      <option name="closed" value="true" />
+      <created>1730184975762</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1730184975762</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
