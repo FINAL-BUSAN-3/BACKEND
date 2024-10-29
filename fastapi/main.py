@@ -18,6 +18,9 @@ from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
+from datetime import datetime, timedelta
+import pytz
+
 # 로깅 설정 추가
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -103,18 +106,20 @@ async def get_employees():
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
             await cursor.execute(
-                "SELECT employees.name, employees.employee_no, employees.position, employees.last_login FROM employees")
+                "SELECT employees.name, employees.employee_no, employees.position, employees.last_login FROM employees"
+            )
             result = await cursor.fetchall()
             conn.close()
 
-            # 데이터 가공: 객체 배열로 변환
+            # last_login이 None이면 "최근 기록이 없음"으로 설정하고, 날짜가 있으면 한국 시간대로 변환하여 ISO 문자열로 반환
+            kst = pytz.timezone("Asia/Seoul")
             employees = [
                 {
-                    "id": row[0],  # 고유 ID 사용
+                    "id": row[1],  # employee_no를 고유 ID로 사용
                     "name": row[0],
                     "employeeNo": row[1],
                     "position": row[2],
-                    "lastLogin": row[3]
+                    "lastLogin": row[3].astimezone(kst).isoformat() if row[3] else "최근 기록이 없음"
                 }
                 for row in result
             ]
@@ -122,6 +127,8 @@ async def get_employees():
             return {"employees": employees}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
 
 @app.get("/user-management/group-list")
 async def get_user_groups():
@@ -174,14 +181,16 @@ async def add_user(user: User):
 
             # 중복되지 않은 경우에만 추가
             await cursor.execute(
-                "INSERT INTO employees (name, employee_no, position) VALUES (%s, %s, %s)",
-                (user.name, user.employeeNo, user.position)  # 'role'이 아닌 'position'으로 변경
+                "INSERT INTO employees (name, employee_no, position, last_login) VALUES (%s, %s, %s, NULL)",
+                (user.name, user.employeeNo, user.position)  # last_login을 NULL로 설정
             )
             await conn.commit()
         conn.close()
         return {"message": "사용자가 성공적으로 추가되었습니다."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
 
 
 
@@ -453,12 +462,14 @@ class LoginRequest(BaseModel):
     username: str
     employee_no: int
 
-# 로그인 엔드포인트
+
+# FastAPI 로그인 엔드포인트 확인
 @app.post("/")
 async def login(request: LoginRequest):
     conn = await get_db_connection()
     try:
         async with conn.cursor() as cursor:
+            # 로그인 시도 로그
             print(f"로그인 시도 - username: {request.username}, employee_no: {request.employee_no}")
             await cursor.execute(
                 "SELECT name, employee_no, position FROM employees WHERE name = %s AND employee_no = %s",
@@ -468,11 +479,25 @@ async def login(request: LoginRequest):
             if not result:
                 raise HTTPException(status_code=400, detail="Invalid username or employee number")
 
-            name, employee_no, role = result
-            print(f"로그인 성공 - Role: {role}")  # role이 정확한지 로그로 확인
-            return {"message": "Login successful", "role": role}  # 역할(role) 반환
+            name, employee_no, position = result
+            print(f"로그인 성공 - Role: {position}")
+
+            # pytz를 사용해 현재 시간을 한국 시간대로 설정
+            kst = pytz.timezone('Asia/Seoul')
+            current_time = datetime.now(kst).strftime('%Y-%m-%d %H:%M:%S')
+            print(f"Current Time (KST): {current_time}")  # 로그로 현재 시간 확인
+
+            await cursor.execute(
+                "UPDATE employees SET last_login = %s WHERE employee_no = %s",
+                (current_time, employee_no)
+            )
+            await conn.commit()
+
+            return {"message": "Login successful", "role": position}
     finally:
         conn.close()
+
+
 
 
 ################로그아웃#############
