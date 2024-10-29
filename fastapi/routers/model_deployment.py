@@ -17,11 +17,11 @@ async def model_insert():
 # @router.get("/model-select")
 # async def model_select():
 #     return {"message": "Model selected"}
+#
+# @router.get("/model-detail")
+# async def model_detail():
+#     return {"message": "Model detail"}
 
-@router.get("/model-detail")
-async def model_detail():
-    return {"message": "Model detail"}
-
-@router.get("/model-apply")
-async def model_apply():
-    return {"message": "Model applied"}
+# @router.get("/model-apply")
+# async def model_apply():
+#     return {"message": "Model applied"}
