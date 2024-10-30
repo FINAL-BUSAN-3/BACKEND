@@ -173,20 +173,88 @@ async def get_user_detail(user_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# models 테이블의 데이터를 가져오는 엔드포인트 추가
 @app.get("/model-deployment/model-select")
-async def get_model_file_names():
+async def get_model_info():
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT model_info_id FROM model_info")
+            await cursor.execute(
+                "SELECT model_info_id, model_name, model_version, python_version, library, model_type, loss, accuracy "
+                "FROM model_info"
+            )
             result = await cursor.fetchall()
             conn.close()
 
-            # 데이터 가공: 모델 파일 이름 목록 생성
-            model_file_names = [row[0] for row in result] if result else []
+            # 데이터 가공: 모델 정보 목록 생성
+            models = [
+                {
+                    "model_info_id": row[0],
+                    "model_name": row[1],
+                    "model_version": row[2],
+                    "python_version": row[3],
+                    "library": row[4],
+                    "model_type": row[5],
+                    "loss": row[6],
+                    "accuracy": row[7],
+                } for row in result
+            ] if result else []
 
-            return {"model_file_names": model_file_names}
+            return {"models": models}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/model-deployment/deploy-previous-model")
+async def deploy_previous_model(model_info_id: str, deployment_date: str):
+    conn = await get_db_connection()
+    async with conn.cursor() as cursor:
+        try:
+            # model_info 테이블에서 deployment_date 업데이트
+            await cursor.execute(
+                "UPDATE model_info SET deployment_date = %s WHERE model_info_id = %s",
+                (deployment_date, model_info_id)
+            )
+
+            # model_use 테이블에서 모든 상태를 0으로 업데이트
+            await cursor.execute("UPDATE model_use SET model_use_state = 0")
+
+            # 선택된 모델의 상태를 1로 업데이트
+            await cursor.execute(
+                "UPDATE model_use SET model_use_state = 1 WHERE model_use_id = %s",
+                (model_info_id,)
+            )
+
+            await conn.commit()
+            return {"message": "배포가 성공적으로 완료되었습니다."}
+        except Exception as e:
+            await conn.rollback()
+            raise HTTPException(status_code=500, detail=str(e))
+        finally:
+            conn.close()
+
+# models 테이블의 데이터를 가져오는 엔드포인트 추가
+@app.get("/model-deployment/model-info/{model_id}")
+async def get_model_info(model_id: str):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                "SELECT model_name, model_version, python_version, library, model_type, loss, accuracy "
+                "FROM model_info WHERE model_info_id = %s", (model_id,)
+            )
+            result = await cursor.fetchone()
+            conn.close()
+            if result:
+                return {
+                    "model_name": result[0],
+                    "model_version": result[1],
+                    "python_version": result[2],
+                    "library": result[3],
+                    "model_type": result[4],
+                    "loss": result[5],
+                    "accuracy": result[6],
+                }
+            else:
+                raise HTTPException(status_code=404, detail="Model not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -292,3 +360,45 @@ async def get_realtime_press_insert():
             return {"press_raw_data": press_raw_data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# /model-deployment/model-detail 엔드포인트
+@app.get("/model-deployment/model-detail")
+async def get_active_model_info():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            # state가 1인 모델 ID를 model_use 테이블에서 가져옴
+            await cursor.execute("SELECT model_use_id FROM model_use WHERE model_use_state = 1 LIMIT 1")
+            result = await cursor.fetchone()
+
+            if not result:
+                raise HTTPException(status_code=404, detail="No active model found")
+
+            model_info_id = result[0]
+
+            # model_info 테이블에서 해당 모델의 상세 정보 가져오기
+            await cursor.execute("""
+                SELECT model_name, model_version, python_version, library, model_type, loss, accuracy
+                FROM model_info WHERE model_info_id = %s
+            """, (model_info_id,))
+            model_info = await cursor.fetchone()
+
+            if not model_info:
+                raise HTTPException(status_code=404, detail="Model information not found")
+
+            # 결과를 딕셔너리 형태로 반환
+            return {
+                "model_name": model_info[0],
+                "model_version": model_info[1],
+                "python_version": model_info[2],
+                "library": model_info[3],
+                "model_type": model_info[4],
+                "loss": model_info[5],
+                "accuracy": model_info[6],
+            }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
