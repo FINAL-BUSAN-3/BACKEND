@@ -7,7 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="로그인, 로그아웃 기능">
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="틀 수정">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
     </list>
@@ -347,7 +347,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730184975762</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="틀 수정">
+      <option name="closed" value="true" />
+      <created>1730191109157</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1730191109157</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -398,6 +406,7 @@
     <MESSAGE value="사용자 관리, 경영지표 - 상세정보 수정 완료" />
     <MESSAGE value="사용자 관리, 경영지표 - 날라간거 복구 완료.." />
     <MESSAGE value="로그인, 로그아웃 기능" />
-    <option name="LAST_COMMIT_MESSAGE" value="로그인, 로그아웃 기능" />
+    <MESSAGE value="틀 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="틀 수정" />
   </component>
 </project>

@@ -9,7 +9,7 @@ import pkgutil
 import importlib
 import aiomysql
 from pydantic import BaseModel  # BaseModel 임포트 추가
-from typing import List
+from typing import List, Dict
 import logging
 import pytz
 
@@ -471,4 +471,11 @@ async def logout():
     response = {"message": "로그아웃되었습니다."}
     # 여기서 필요한 경우 세션 정보를 삭제하는 로직 추가 가능
     return response
+
+
+########################## 소셜-키워드 ###################################
+@app.get("/api/keywords")
+async def get_keywords() -> List[str]:
+    # 예시 데이터 반환
+    return ["Electric Car", "Battery", "Energy", "Hybrid", "Sustainable"]
 
