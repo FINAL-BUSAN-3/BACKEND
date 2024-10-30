@@ -9,10 +9,13 @@ import importlib
 import aiomysql
 from pydantic import BaseModel
 from typing import Optional
+import aiohttp
 from io import BytesIO
 from datetime import datetime
+import logging
 
 app = FastAPI()
+current_index = 0
 
 # CORS 설정
 app.add_middleware(
@@ -258,6 +261,49 @@ async def get_model_info(model_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# /model-deployment/model-detail 엔드포인트
+@app.get("/model-deployment/model-detail")
+async def get_active_model_info():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            # state가 1인 모델 ID를 model_use 테이블에서 가져옴
+            await cursor.execute("SELECT model_use_id FROM model_use WHERE model_use_state = 1 LIMIT 1")
+            result = await cursor.fetchone()
+
+            if not result:
+                raise HTTPException(status_code=404, detail="No active model found")
+
+            model_info_id = result[0]
+
+            # model_info 테이블에서 해당 모델의 상세 정보 가져오기
+            await cursor.execute("""
+                SELECT model_name, model_version, python_version, library, model_type, loss, accuracy
+                FROM model_info WHERE model_info_id = %s
+            """, (model_info_id,))
+            model_info = await cursor.fetchone()
+
+            if not model_info:
+                raise HTTPException(status_code=404, detail="Model information not found")
+
+            # 결과를 딕셔너리 형태로 반환
+            return {
+                "model_name": model_info[0],
+                "model_version": model_info[1],
+                "python_version": model_info[2],
+                "library": model_info[3],
+                "model_type": model_info[4],
+                "loss": model_info[5],
+                "accuracy": model_info[6],
+            }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+
 # 모델 데이터 정의
 class ModelData(BaseModel):
     model_name: str
@@ -349,7 +395,7 @@ async def get_realtime_press_insert():
                     "machine_name": row[1],
                     "item_no": row[2],
                     "working_time": row[3],
-                    "press_time(ms)": row[4],
+                    "press_time_ms": row[4],
                     "pressure_1": row[5],
                     "pressure_2": row[6],
                     "pressure_5": row[7],
@@ -361,44 +407,83 @@ async def get_realtime_press_insert():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# /model-deployment/model-detail 엔드포인트
-@app.get("/model-deployment/model-detail")
-async def get_active_model_info():
+@app.get("/engineering/realtime-welding/insert")
+async def get_realtime_welding_insert():
+    global current_index
     try:
-        conn = await get_db_connection()
+        conn = await get_db_welding_connection()  # DB 연결
         async with conn.cursor() as cursor:
-            # state가 1인 모델 ID를 model_use 테이블에서 가져옴
-            await cursor.execute("SELECT model_use_id FROM model_use WHERE model_use_state = 1 LIMIT 1")
-            result = await cursor.fetchone()
+            # 현재 인덱스 기준으로 데이터 하나 가져오기
+            query = f"SELECT * FROM welding_raw_data LIMIT 1 OFFSET {current_index}"
+            await cursor.execute(query)
+            result = await cursor.fetchall()
 
-            if not result:
-                raise HTTPException(status_code=404, detail="No active model found")
-
-            model_info_id = result[0]
-
-            # model_info 테이블에서 해당 모델의 상세 정보 가져오기
-            await cursor.execute("""
-                SELECT model_name, model_version, python_version, library, model_type, loss, accuracy
-                FROM model_info WHERE model_info_id = %s
-            """, (model_info_id,))
-            model_info = await cursor.fetchone()
-
-            if not model_info:
-                raise HTTPException(status_code=404, detail="Model information not found")
-
-            # 결과를 딕셔너리 형태로 반환
-            return {
-                "model_name": model_info[0],
-                "model_version": model_info[1],
-                "python_version": model_info[2],
-                "library": model_info[3],
-                "model_type": model_info[4],
-                "loss": model_info[5],
-                "accuracy": model_info[6],
-            }
+            # 다음 호출을 위해 인덱스 업데이트
+            if result:
+                current_index += 1
+                welding_raw_data = [
+                    {
+                        "idx": row[0],
+                        "machine_name": row[1],
+                        "item_no": row[2],
+                        "working_time": row[3],
+                        "thickness_1_mm": row[4],
+                        "thickness_2_mm": row[5],
+                        "welding_force_bar": row[6],
+                        "welding_current_ka": row[7],
+                        "weld_voltage_v": row[8],
+                        "weld_time_ms": row[9]
+                    }
+                    for row in result
+                ]
+                return {"welding_raw_data": welding_raw_data}
+            else:
+                # 데이터가 없을 경우 인덱스 초기화 (순환 시작)
+                current_index = 0
+                return {"message": "No more data available, resetting index."}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        conn.close()
+
+
+# Colab ngrok API 주소 설정
+NGROK_MODEL_API = "https://9852-34-145-79-187.ngrok-free.app/engineering/realtime-welding/predict"
+# 로그 설정
+logging.basicConfig(level=logging.INFO)
+
+@app.get("/engineering/realtime-welding/select")
+async def select_and_predict_welding_quality():
+    try:
+        # 데이터 가져오기 확인
+        logging.info("Fetching welding data from insert endpoint")
+        welding_data = await get_realtime_welding_insert()
+        raw_data = welding_data["welding_raw_data"][0]  # 첫 번째 데이터 추출
+
+        # ngrok API에 필요한 컬럼만 선택하여 데이터 형식 맞추기
+        sample_data = [
+            float(raw_data["welding_force_bar"]),
+            float(raw_data["welding_current_ka"]),
+            float(raw_data["weld_voltage_v"]),
+            float(raw_data["weld_time_ms"])
+        ]
+
+        # 전송할 데이터 형식 맞추기
+        payload = {"data": sample_data}
+        logging.info(f"Sending formatted data to ngrok API: {payload}")
+
+        # ngrok API에 POST 요청 전송
+        async with aiohttp.ClientSession() as session:
+            async with session.post(NGROK_MODEL_API, json=payload) as response:
+                if response.status == 200:
+                    prediction_result = await response.json()
+                    logging.info(f"Received prediction result: {prediction_result}")
+                    return {
+                        "prediction": prediction_result.get("prediction")
+                    }
+                else:
+                    error_message = f"Failed to get prediction from ngrok API, Status: {response.status}"
+                    logging.error(error_message)
+                    raise HTTPException(status_code=response.status, detail=error_message)
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
