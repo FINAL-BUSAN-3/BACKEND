@@ -18,17 +18,17 @@ async def management_home():
 async def realtime_press_select():
     return {"message": "Realtime press select"}
 
-@router.get("/realtime-press/insert")
-async def realtime_press_insert():
-    return {"message": "Realtime press insert"}
+# @router.get("/realtime-press/insert")
+# async def realtime_press_insert():
+#     return {"message": "Realtime press insert"}
+#
+# @router.get("/realtime-welding/select")
+# async def realtime_welding_select():
+#     return {"message": "Realtime welding select"}
 
-@router.get("/realtime-welding/select")
-async def realtime_welding_select():
-    return {"message": "Realtime welding select"}
-
-@router.get("/realtime-welding/insert")
-async def realtime_welding_insert():
-    return {"message": "Realtime welding insert"}
+# @router.get("/realtime-welding/insert")
+# async def realtime_welding_insert():
+#     return {"message": "Realtime welding insert"}
 
 @router.get("/realtime-press/trend")
 async def realtime_press_trend():
