@@ -7,10 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="사용자 관리 페이지 - 모델 배포 끝">
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="한수현 + 서희림">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi/routers/engineering.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/routers/engineering.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +45,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -308,7 +307,23 @@
       <option name="project" value="LOCAL" />
       <updated>1730278075386</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="&lt;Model - Welding 연동&gt;&#10;실시간 불량 예측 성공">
+      <option name="closed" value="true" />
+      <created>1730300830240</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1730300830240</updated>
+    </task>
+    <task id="LOCAL-00024" summary="한수현 + 서희림">
+      <option name="closed" value="true" />
+      <created>1730336336854</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1730336336854</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -355,6 +370,8 @@
     <MESSAGE value="수정중1" />
     <MESSAGE value="사용자 관리 페이지 - 사용자 추가, 권한 추가 기능 구현" />
     <MESSAGE value="사용자 관리 페이지 - 모델 배포 끝" />
-    <option name="LAST_COMMIT_MESSAGE" value="사용자 관리 페이지 - 모델 배포 끝" />
+    <MESSAGE value="&lt;Model - Welding 연동&gt;&#10;실시간 불량 예측 성공" />
+    <MESSAGE value="한수현 + 서희림" />
+    <option name="LAST_COMMIT_MESSAGE" value="한수현 + 서희림" />
   </component>
 </project>

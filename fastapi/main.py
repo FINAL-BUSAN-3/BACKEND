@@ -123,6 +123,54 @@ class Group(BaseModel):
     groupName: str
     groupDescription: str
 
+
+
+#######################3######### user list #################################33#######
+# employees 테이블의 데이터를 가져오는 엔드포인트
+@app.get("/user-management/user-list")
+async def get_employees():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute(
+                "SELECT employees.name, employees.employee_no, employees.position, employees.last_login FROM employees"
+            )
+            result = await cursor.fetchall()
+            conn.close()
+
+            # last_login이 None이면 "최근 기록이 없음"으로 설정하고, 날짜가 있으면 한국 시간대로 변환하여 ISO 문자열로 반환
+            kst = pytz.timezone("Asia/Seoul")
+            employees = [
+                {
+                    "id": row[1],  # employee_no를 고유 ID로 사용
+                    "name": row[0],
+                    "employeeNo": row[1],
+                    "position": row[2],
+                    "lastLogin": row[3].astimezone(kst).isoformat() if row[3] else "최근 기록이 없음"
+                }
+                for row in result
+            ]
+
+            return {"employees": employees}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+#################################### group list ######################################
+@app.get("/user-management/group-list")
+async def get_user_groups():
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT id, group_name, description FROM user_groups")
+            user_groups = await cursor.fetchall()
+        conn.close()
+        return {"user_groups": user_groups}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
 @app.post("/user-management/user-add")
 async def add_user(user: User):
     try:
