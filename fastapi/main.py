@@ -24,12 +24,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from database import get_db_connection
 
+import uvicorn
 
 # 로깅 설정 추가
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+uvicorn.run(app, host="0.0.0.0", port=8000)
 
 # CORS 설정
 app.add_middleware(
@@ -163,14 +165,14 @@ async def login(request: LoginRequest):
 
 
 ######################################### 로그아웃 ###########################################
-@app.post("/")
-async def logout():
-    """
-    로그아웃 엔드포인트:
-    - 클라이언트의 세션을 종료하거나 쿠키를 삭제합니다.
-    """
-    # 로그아웃 관련 세션 삭제 및 응답 설정
-    response = {"message": "로그아웃되었습니다."}
-    # 여기서 필요한 경우 세션 정보를 삭제하는 로직 추가 가능
-    return response
-
+# @app.post("/")
+# async def logout():
+#     """
+#     로그아웃 엔드포인트:
+#     - 클라이언트의 세션을 종료하거나 쿠키를 삭제합니다.
+#     """
+#     # 로그아웃 관련 세션 삭제 및 응답 설정
+#     response = {"message": "로그아웃되었습니다."}
+#     # 여기서 필요한 경우 세션 정보를 삭제하는 로직 추가 가능
+#     return response
+#
