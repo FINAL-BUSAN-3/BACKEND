@@ -7,7 +7,7 @@ router = APIRouter()
 current_index = 0
 
 # 외부 API URL 설정
-NGROK_MODEL_API = "https://9852-34-145-79-187.ngrok-free.app/engineering/realtime-welding/predict"
+NGROK_MODEL_API = "https://4c6d-34-45-140-254.ngrok-free.app/engineering/realtime-welding/predict"
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
