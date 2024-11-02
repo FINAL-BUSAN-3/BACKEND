@@ -1,0 +1,17 @@
+Index: fastapi_superset/main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from fastapi import FastAPI, HTTPException\r\nfrom fastapi.middleware.cors import CORSMiddleware\r\nfrom controllers import test_controller  # 필요에 따라 적절한 컨트롤러 경로로 수정하세요.\r\nfrom superset import get_superset_data  # Superset API 호출 함수 임포트\r\n\r\napp = FastAPI()\r\n\r\n# CORS 설정\r\napp.add_middleware(\r\n    CORSMiddleware,\r\n    allow_origins=[\"http://localhost:8080\"],  # Vue.js 앱의 주소\r\n    allow_credentials=True,\r\n    allow_methods=[\"*\"],\r\n    allow_headers=[\"*\"],\r\n)\r\n\r\n# 컨트롤러의 라우터를 애플리케이션에 포함\r\napp.include_router(test_controller.router)\r\n\r\n# 기존의 기능들 유지\r\n@app.get(\"/items/{item_id}\")\r\nasync def read_item(item_id: int):\r\n    return {\"item_id\": item_id, \"name\": f\"Item {item_id}\"}\r\n\r\n# Superset 데이터 가져오는 엔드포인트\r\n@app.get(\"/superset-data\")\r\nasync def superset_data():\r\n    try:\r\n        data = await get_superset_data()  # Superset 데이터 호출\r\n        return data\r\n    except Exception as e:\r\n        raise HTTPException(status_code=500, detail=str(e))  # 에러 처리\r\n\r\n# 새로운 /test 라우터 추가\r\n@app.get(\"/test\")\r\nasync def test_endpoint():\r\n    return {\"message\": \"Hello from FastAPI!\"}\r\n
+===================================================================
+diff --git a/fastapi_superset/main.py b/fastapi_superset/main.py
+--- a/fastapi_superset/main.py	(revision 5c42dae510795d6bdc8fd98b3c5d070b6f2d24f4)
++++ b/fastapi_superset/main.py	(date 1728885749301)
+@@ -8,7 +8,7 @@
+ # CORS 설정
+ app.add_middleware(
+     CORSMiddleware,
+-    allow_origins=["http://localhost:8080"],  # Vue.js 앱의 주소
++    allow_origins=["http://localhost:8080"],  # Vue.js 앱의  주소
+     allow_credentials=True,
+     allow_methods=["*"],
+     allow_headers=["*"],
