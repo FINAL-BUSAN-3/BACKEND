@@ -24,12 +24,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from database import get_db_connection
 
+import uvicorn
 
 # 로깅 설정 추가
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+uvicorn.run(app, host="0.0.0.0", port=8000)
 
 # CORS 설정
 app.add_middleware(

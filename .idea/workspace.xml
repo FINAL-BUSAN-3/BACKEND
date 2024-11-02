@@ -9,8 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="모듈화 반영 끝">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi/routers/engineering.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/routers/engineering.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi/routers/model_management.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/routers/model_management.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +61,7 @@
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "EO3-115-Backend-Welding-Realtime",
+    "git-widget-placeholder": "EO3-119-Backend-press-welding",
     "last_opened_file_path": "C:/Users/KFQ/Desktop/git/BACKEND",
     "run.code.analysis.last.selected.profile": "aDefault",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
