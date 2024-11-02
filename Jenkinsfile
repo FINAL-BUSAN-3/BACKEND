@@ -11,7 +11,7 @@ pipeline {
                         steps {
                             script{
                                 def localUser = 'ubuntu'
-                                def localHost = 'ec2-54-198-145-116.compute-1.amazonaws.com'
+                                def localHost = 'ec2-18-215-52-54.compute-1.amazonaws.com'
                                 def pemPath = '/var/jenkins_home/busan.pem'
 
                                 sh 'echo "[Schedule Sync] Git clone"'
@@ -27,7 +27,7 @@ pipeline {
 			steps{
 				script{
 					def localUser = 'ubuntu'
-                    def localHost = 'ec2-54-198-145-116.compute-1.amazonaws.com'
+                    def localHost = 'ec2-18-215-52-54.compute-1.amazonaws.com'
                     def pemPath = '/var/jenkins_home/busan.pem'
 
 
@@ -45,7 +45,7 @@ pipeline {
 			steps{
 				script{
 					def localUser = 'ubuntu'
-                    def localHost = 'ec2-54-198-145-116.compute-1.amazonaws.com'
+                    def localHost = 'ec2-18-215-52-54.compute-1.amazonaws.com'
                     def pemPath = '/var/jenkins_home/busan.pem'
 
 					sh """
