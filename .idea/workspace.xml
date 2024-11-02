@@ -59,7 +59,6 @@
   "keyToString": {
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/KFQ/Desktop/git/BACKEND",
     "node.js.detected.package.eslint": "true",
@@ -354,7 +353,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730536023906</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="uvicorn 에러 해결">
+      <option name="closed" value="true" />
+      <created>1730536107772</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1730536107772</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
