@@ -31,7 +31,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
-uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 # CORS 설정
 app.add_middleware(
@@ -41,6 +41,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 def register_routers(app):
