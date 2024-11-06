@@ -42,8 +42,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-uvicorn.run(app, host="0.0.0.0", port=8000)
-
 
 def register_routers(app):
     router = APIRouter()
