@@ -49,7 +49,7 @@ pipeline {
                     def pemPath = '/var/jenkins_home/busan.pem'
 
 					sh """
-                    ssh -i ${pemPath} ${localUser}@${localHost} "cd /home/ubuntu/BACKEND/fastapi && pm2 start \"uvicorn main:app --host 0.0.0.0 --port 8000\" --name backend "
+                    ssh -i ${pemPath} ${localUser}@${localHost} "cd /home/ubuntu/BACKEND/fastapi && pm2 start \\"uvicorn main:app --host 0.0.0.0 --port 8000\\" --name backend "
                     """
                     sh 'echo "[BACKEND] SERVER ON"'
 					slackSend(channel: '#deployment-alert', color: '#00FF7F' , message: "[WEB] SERVER ON : Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
