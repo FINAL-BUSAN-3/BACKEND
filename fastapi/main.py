@@ -24,8 +24,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from database import get_db_connection
 
-import uvicorn
-
 # 로깅 설정 추가
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -41,8 +39,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 def register_routers(app):
