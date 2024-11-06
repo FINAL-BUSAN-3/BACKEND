@@ -7,9 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="uvicorn 에러 해결">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="에러 수정 및 자동화" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,6 +35,14 @@
     &quot;assignee&quot;: &quot;Basil-Pesto-Pizza&quot;
   }
 }</component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value="develop" />
+        <option value="main" />
+      </list>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/FINAL-BUSAN-3/BACKEND.git&quot;,
@@ -136,6 +142,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1726898854628</updated>
+      <workItem from="1730893486186" duration="348000" />
     </task>
     <task id="LOCAL-00001" summary="커밋앤푸시">
       <option name="closed" value="true" />
@@ -377,7 +384,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730536341529</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="에러 수정 및 자동화">
+      <option name="closed" value="true" />
+      <created>1730893613651</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1730893613651</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -431,6 +446,7 @@
     <MESSAGE value="한수현 + 서희림" />
     <MESSAGE value="main.py 포트 설정" />
     <MESSAGE value="uvicorn 에러 해결" />
-    <option name="LAST_COMMIT_MESSAGE" value="uvicorn 에러 해결" />
+    <MESSAGE value="에러 수정 및 자동화" />
+    <option name="LAST_COMMIT_MESSAGE" value="에러 수정 및 자동화" />
   </component>
 </project>
