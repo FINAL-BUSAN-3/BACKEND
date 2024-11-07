@@ -116,7 +116,7 @@ async def select_and_predict_welding_quality():
 # 실시간 프레스 엔드 포인트
 @router.get("/realtime-press/insert")
 async def get_realtime_press_insert():
-    """실시간 프레스 데이터 한 항목 가져오기 및 인덱스 자동 증가"""
+    """Retrieve a single real-time press data item and automatically increment the index."""
     global current_index_press
     async with press_lock:
         try:
@@ -142,24 +142,24 @@ async def get_realtime_press_insert():
                     return {"press_data": press_data}
                 else:
                     current_index_press = 0
-                    return {"message": "더 이상 데이터가 없으므로 인덱스를 초기화합니다."}
+                    return {"message": "No more data; resetting index."}
         except Exception as e:
+            logging.error(f"Error in get_realtime_press_insert: {e}")
             raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/realtime-press/select")
 async def select_and_predict_press_quality():
-    """실시간 프레스 데이터 가져오기 및 품질 예측"""
+    """Retrieve a single real-time press data item and predict quality."""
     global current_index_press
     async with press_lock:
         try:
             conn = await get_db_press_connection()
             async with conn.cursor() as cursor:
-                # 현재 인덱스를 사용해 select 엔드포인트에서도 데이터 가져오기
                 query = f"SELECT * FROM press_raw_data LIMIT 1 OFFSET {current_index_press - 1}"
                 await cursor.execute(query)
                 result = await cursor.fetchall()
                 if not result:
-                    raise HTTPException(status_code=404, detail="데이터를 찾을 수 없습니다.")
+                    raise HTTPException(status_code=404, detail="No data found for prediction.")
 
                 raw_press_data = {
                     "pressure_1": result[0][5],
@@ -172,18 +172,18 @@ async def select_and_predict_press_quality():
                 ]
 
                 press_payload = {"data": sample_press_data}
-                logging.info(f"프레스 데이터를 ngrok API로 전송: {press_payload}")
+                logging.info(f"Sending press data to ngrok API: {press_payload}")
 
                 async with aiohttp.ClientSession() as session:
                     async with session.post(NGROK_PRESS_MODEL_API, json=press_payload) as response:
                         if response.status == 200:
                             press_prediction_result = await response.json()
-                            logging.info(f"프레스 예측 결과 받음: {press_prediction_result}")
+                            logging.info(f"Received press prediction result: {press_prediction_result}")
                             return {"press_prediction": press_prediction_result.get("prediction")}
                         else:
-                            error_message = f"ngrok API 프레스 예측 실패, 상태: {response.status}"
+                            error_message = f"Failed to get prediction from ngrok API, status: {response.status}"
                             logging.error(error_message)
                             raise HTTPException(status_code=response.status, detail=error_message)
         except Exception as e:
-            logging.error(f"오류 발생: {e}")
+            logging.error(f"Error in select_and_predict_press_quality: {e}")
             raise HTTPException(status_code=500, detail=str(e))
