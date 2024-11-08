@@ -3,6 +3,7 @@ from database import get_db_press_connection, get_db_welding_connection
 import aiohttp
 import asyncio
 import logging
+from datetime import datetime  # datetime 모듈 임포트
 
 router = APIRouter()
 
@@ -13,8 +14,8 @@ welding_lock = asyncio.Lock()  # Welding 인덱스에 대한 잠금
 press_lock = asyncio.Lock()     # Press 인덱스에 대한 잠금
 
 # 외부 API URL 설정
-NGROK_WELDING_MODEL_API = "https://6b30-34-44-84-145.ngrok-free.app/engineering/realtime-welding/predict"
-NGROK_PRESS_MODEL_API = "https://6b30-34-44-84-145.ngrok-free.app/engineering/realtime-press/predict"
+NGROK_WELDING_MODEL_API = "https://9fc7-34-168-25-223.ngrok-free.app/engineering/realtime-welding/predict"
+NGROK_PRESS_MODEL_API = "https://9fc7-34-168-25-223.ngrok-free.app/engineering/realtime-press/predict"
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -113,10 +114,10 @@ async def select_and_predict_welding_quality():
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
-# 실시간 프레스 엔드 포인트
+
 @router.get("/realtime-press/insert")
 async def get_realtime_press_insert():
-    """Retrieve a single real-time press data item and automatically increment the index."""
+    """Insert a new press data row into the press_trend table without updating the prediction column."""
     global current_index_press
     async with press_lock:
         try:
@@ -128,7 +129,6 @@ async def get_realtime_press_insert():
                 if result:
                     press_data = [
                         {
-                            "idx": row[0],
                             "machine_name": row[1],
                             "item_no": row[2],
                             "working_time": row[3],
@@ -138,6 +138,18 @@ async def get_realtime_press_insert():
                             "pressure_5": row[7],
                         } for row in result
                     ]
+                    # Insert data row without prediction
+                    insert_query = """
+                        INSERT INTO press_trend (machine_name, item_no, working_time, press_time_ms, pressure_1, pressure_2, pressure_5, trend_time)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    """
+                    trend_time = datetime.now()
+                    for row in result:
+                        await cursor.execute(insert_query, (
+                            row[1], row[2], row[3], row[4], row[5], row[6], row[7], trend_time
+                        ))
+                    await conn.commit()
+
                     current_index_press += 1
                     return {"press_data": press_data}
                 else:
@@ -147,39 +159,49 @@ async def get_realtime_press_insert():
             logging.error(f"Error in get_realtime_press_insert: {e}")
             raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.get("/realtime-press/select")
 async def select_and_predict_press_quality():
-    """Retrieve a single real-time press data item and predict quality."""
-    global current_index_press
+    """Predict and update the prediction column in the most recent row of press_trend without inserting new data rows."""
     async with press_lock:
         try:
             conn = await get_db_press_connection()
             async with conn.cursor() as cursor:
-                query = f"SELECT * FROM press_raw_data LIMIT 1 OFFSET {current_index_press - 1}"
+                # Prepare prediction data from the most recent inserted data
+                query = "SELECT pressure_1, pressure_2 FROM press_trend ORDER BY idx DESC LIMIT 1"
                 await cursor.execute(query)
                 result = await cursor.fetchall()
                 if not result:
                     raise HTTPException(status_code=404, detail="No data found for prediction.")
 
-                raw_press_data = {
-                    "pressure_1": result[0][5],
-                    "pressure_2": result[0][6]
-                }
-
+                # Use retrieved data for prediction
                 sample_press_data = [
-                    float(raw_press_data["pressure_1"]),
-                    float(raw_press_data["pressure_2"])
+                    float(result[0][0]),  # pressure_1
+                    float(result[0][1])  # pressure_2
                 ]
 
                 press_payload = {"data": sample_press_data}
                 logging.info(f"Sending press data to ngrok API: {press_payload}")
 
+                # Call prediction API and update the latest row
                 async with aiohttp.ClientSession() as session:
                     async with session.post(NGROK_PRESS_MODEL_API, json=press_payload) as response:
                         if response.status == 200:
                             press_prediction_result = await response.json()
+                            prediction = press_prediction_result.get("prediction")
+
+                            # Update prediction in the most recent row
+                            update_prediction_query = """
+                                UPDATE press_trend
+                                SET prediction = %s
+                                ORDER BY idx DESC
+                                LIMIT 1
+                            """
+                            await cursor.execute(update_prediction_query, (prediction,))
+                            await conn.commit()
+
                             logging.info(f"Received press prediction result: {press_prediction_result}")
-                            return {"press_prediction": press_prediction_result.get("prediction")}
+                            return {"press_prediction": prediction}
                         else:
                             error_message = f"Failed to get prediction from ngrok API, status: {response.status}"
                             logging.error(error_message)
