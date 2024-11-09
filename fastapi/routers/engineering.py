@@ -17,8 +17,8 @@ shared_trend_time_press = None
 welding_lock = asyncio.Lock()  # Welding 인덱스에 대한 잠금
 press_lock = asyncio.Lock()     # Press 인덱스에 대한 잠금
 # 외부 API URL 설정
-NGROK_WELDING_MODEL_API = "https://9fc7-34-168-25-223.ngrok-free.app/engineering/realtime-welding/predict"
-NGROK_PRESS_MODEL_API = "https://9fc7-34-168-25-223.ngrok-free.app/engineering/realtime-press/predict"
+NGROK_WELDING_MODEL_API = "https://eb00-34-19-3-150.ngrok-free.app/engineering/realtime-welding/predict"
+NGROK_PRESS_MODEL_API = "https://eb00-34-19-3-150.ngrok-free.app/engineering/realtime-press/predict"
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -49,6 +49,7 @@ async def realtime_welding_trend():
 def datetime_to_str(dt):
     return dt if isinstance(dt, str) else dt.isoformat() if dt else None
 
+
 @router.websocket("/ws/realtime-welding/insert")
 async def websocket_realtime_welding_insert(websocket: WebSocket):
     await websocket.accept()
@@ -67,7 +68,7 @@ async def websocket_realtime_welding_insert(websocket: WebSocket):
                     await cursor.execute(query)
                     result = await cursor.fetchall()
                     if result:
-                        # trend_time을 설정하여 select에서도 동일하게 참조
+                        # trend_time을 항상 새로 설정
                         shared_trend_time_welding = datetime.now()
                         welding_data = {
                             "machine_name": result[0][1],
@@ -109,6 +110,7 @@ async def websocket_realtime_welding_insert(websocket: WebSocket):
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
         await websocket.close()
+
 
 @router.websocket("/ws/realtime-welding/select")
 async def websocket_realtime_welding_select(websocket: WebSocket):
@@ -174,6 +176,8 @@ async def websocket_realtime_welding_select(websocket: WebSocket):
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
         await websocket.close()
+
+
 
 @router.websocket("/ws/realtime-press/insert")
 async def websocket_realtime_press_insert(websocket: WebSocket):
