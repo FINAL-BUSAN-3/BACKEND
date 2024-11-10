@@ -23,15 +23,21 @@ from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from database import get_db_connection
-
+import asyncio
 import uvicorn
 
-# 로깅 설정 추가
+# 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+# 전역 변수 선언
+current_index_welding = 0
+current_index_press = 0
+shared_trend_time_welding = datetime.now()
+shared_trend_time_press = datetime.now()
+updater_running = False  # 중복 실행 방지 플래그
 
 # CORS 설정
 app.add_middleware(
@@ -43,6 +49,7 @@ app.add_middleware(
 )
 
 
+# 라우터 자동 등록
 def register_routers(app):
     router = APIRouter()
     package = "routers"
@@ -61,6 +68,40 @@ def register_routers(app):
             print(f"Error importing {full_module_name}: {e}")
 
     app.include_router(router)
+
+
+# 정확히 5초마다 index를 증가시키는 비동기 태스크
+async def index_updater():
+    global current_index_welding, current_index_press, updater_running
+    if updater_running:
+        logger.info("Index updater is already running.")
+        return  # 중복 실행 방지
+
+    updater_running = True
+    try:
+        while True:
+            start_time = datetime.now()
+            current_index_welding += 1
+            current_index_press += 1
+            logger.info(f"Updated index: welding={current_index_welding}, press={current_index_press}")
+
+            # 정확히 5초 주기로 실행
+            elapsed_time = (datetime.now() - start_time).total_seconds()
+            await asyncio.sleep(max(0, 5 - elapsed_time))
+    except Exception as e:
+        logger.error(f"Error in index updater: {e}")
+    finally:
+        updater_running = False
+
+
+# FastAPI 앱 시작 시 index_updater 함수를 실행
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(index_updater())
+
+
+# 라우터 등록
+register_routers(app)
 
 
 # 컨트롤러의 라우터를 애플리케이션에 포함
