@@ -7,10 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="일단 프레스랑 용접 기능 만들었음">
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fastapi/routers/engineering.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/routers/engineering.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -380,7 +378,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731142478479</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경">
+      <option name="closed" value="true" />
+      <created>1731243658239</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1731243658239</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -430,6 +436,7 @@
     <MESSAGE value="&lt;Model - Welding 연동&gt;&#10;실시간 불량 예측 성공" />
     <MESSAGE value="한수현 + 서희림" />
     <MESSAGE value="일단 프레스랑 용접 기능 만들었음" />
-    <option name="LAST_COMMIT_MESSAGE" value="일단 프레스랑 용접 기능 만들었음" />
+    <MESSAGE value="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경" />
+    <option name="LAST_COMMIT_MESSAGE" value="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경" />
   </component>
 </project>

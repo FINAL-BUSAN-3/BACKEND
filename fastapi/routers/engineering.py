@@ -28,18 +28,19 @@ press_data = None
 def datetime_to_str(dt):
     return dt if isinstance(dt, str) else dt.isoformat() if dt else None
 
+# Welding Insert WebSocket
 @router.websocket("/ws/realtime-welding/insert")
 async def websocket_realtime_welding_insert(websocket: WebSocket):
     await websocket.accept()
-    last_index = None
+    last_index_welding = None
     interval = 5  # 5초 주기
 
     try:
         while True:
             start_time = time.time()
 
-            if main.current_index_welding != last_index:
-                last_index = main.current_index_welding
+            if main.current_index_welding != last_index_welding:
+                last_index_welding = main.current_index_welding
 
                 async with welding_lock:
                     conn = await get_db_welding_connection()
@@ -91,17 +92,18 @@ async def websocket_realtime_welding_insert(websocket: WebSocket):
         logger.error(f"예기치 못한 오류: {e}")
         await websocket.close()
 
+# Welding Select WebSocket
 @router.websocket("/ws/realtime-welding/select")
 async def websocket_realtime_welding_select(websocket: WebSocket):
     await websocket.accept()
-    last_data = None
+    last_data_welding = None
 
     try:
         while True:
             await asyncio.sleep(1)
 
-            if welding_data != last_data:
-                last_data = welding_data
+            if welding_data != last_data_welding:
+                last_data_welding = welding_data
 
                 async with welding_lock:
                     if welding_data is None or main.shared_trend_time_welding is None:
@@ -141,18 +143,19 @@ async def websocket_realtime_welding_select(websocket: WebSocket):
         logger.error(f"예기치 못한 오류: {e}")
         await websocket.close()
 
+# Press Insert WebSocket
 @router.websocket("/ws/realtime-press/insert")
 async def websocket_realtime_press_insert(websocket: WebSocket):
     await websocket.accept()
-    last_index = None
+    last_index_press = None
     interval = 5  # 5초 주기
 
     try:
         while True:
             start_time = time.time()
 
-            if main.current_index_press != last_index:
-                last_index = main.current_index_press
+            if main.current_index_press != last_index_press:
+                last_index_press = main.current_index_press
 
                 async with press_lock:
                     conn = await get_db_press_connection()
@@ -200,17 +203,18 @@ async def websocket_realtime_press_insert(websocket: WebSocket):
         logger.error(f"예기치 못한 오류: {e}")
         await websocket.close()
 
+# Press Select WebSocket
 @router.websocket("/ws/realtime-press/select")
 async def websocket_realtime_press_select(websocket: WebSocket):
     await websocket.accept()
-    last_data = None
+    last_data_press = None
 
     try:
         while True:
             await asyncio.sleep(1)
 
-            if press_data != last_data:
-                last_data = press_data
+            if press_data != last_data_press:
+                last_data_press = press_data
 
                 async with press_lock:
                     if press_data is None or main.shared_trend_time_press is None:
