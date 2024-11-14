@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, UploadFile, Form, File
 from database import get_db_connection
-from typing import Optional, List
+from typing import Optional
 from pydantic import BaseModel
 from urllib.parse import unquote
 
@@ -28,7 +28,12 @@ async def management_home():
 
 @router.get("/process-select")
 async def process_select():
-    return {"message": "Process selection"}
+    """공정 목록을 반환하는 엔드포인트"""
+    try:
+        processes = ["press", "welding"]
+        return {"processes": processes}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/model-insert")
 async def model_insert():
@@ -37,19 +42,19 @@ async def model_insert():
 # ====================================
 # 모델 정보 조회 엔드포인트
 # ====================================
-@router.get("/model-select")
-async def get_model_info():
-    """전체 모델 정보 목록 가져오기"""
+@router.get("/model-select/{process_name}")
+async def get_filtered_model_info(process_name: str):
+    """선택된 공정을 포함하는 모델 정보 목록 가져오기"""
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
             await cursor.execute(
                 "SELECT model_info_id, model_name, model_version, python_version, library, model_type, loss, accuracy "
-                "FROM model_info"
+                "FROM model_info "
+                "WHERE model_name LIKE %s",
+                (f"%{process_name}%",)
             )
             result = await cursor.fetchall()
-            conn.close()
-
             models = [
                 {
                     "model_info_id": row[0],
@@ -62,17 +67,16 @@ async def get_model_info():
                     "accuracy": row[7],
                 } for row in result
             ] if result else []
-
             return {"models": models}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
 
 @router.get("/model-info/{model_id}")
 async def get_model_info_by_id(model_id: str):
     try:
-        # 모델 ID 디코딩 처리
         model_id = unquote(model_id)
-
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
             await cursor.execute(
@@ -80,7 +84,6 @@ async def get_model_info_by_id(model_id: str):
                 "FROM model_info WHERE model_info_id = %s", (model_id,)
             )
             result = await cursor.fetchone()
-            conn.close()
             if result:
                 return {
                     "model_name": result[0],
@@ -95,25 +98,33 @@ async def get_model_info_by_id(model_id: str):
                 raise HTTPException(status_code=404, detail="Model not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
 
-
-@router.get("/model-detail")
-async def get_active_model_info():
-    """활성 모델 정보 가져오기"""
+@router.get("/model-detail/{process_type}")
+async def get_active_model_info(process_type: str):
+    """선택된 공정의 활성 모델 정보 가져오기"""
     try:
         conn = await get_db_connection()
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT model_use_id FROM model_use WHERE model_use_state = 1 LIMIT 1")
+            # 해당 공정(process_type)이면서 model_use_state가 1인 모델 불러오기
+            await cursor.execute(
+                "SELECT model_use_id FROM model_use WHERE model_use_state = 1 AND model_use_id LIKE %s LIMIT 1",
+                (f"%{process_type}%",)
+            )
             result = await cursor.fetchone()
 
             if not result:
-                raise HTTPException(status_code=404, detail="No active model found")
+                raise HTTPException(status_code=404, detail="No active model found for the selected process")
 
             model_info_id = result[0]
-            await cursor.execute("""
+            await cursor.execute(
+                """
                 SELECT model_name, model_version, python_version, library, model_type, loss, accuracy
                 FROM model_info WHERE model_info_id = %s
-            """, (model_info_id,))
+                """,
+                (model_info_id,)
+            )
             model_info = await cursor.fetchone()
             conn.close()
 
@@ -141,17 +152,31 @@ async def deploy_previous_model(model_info_id: str, deployment_date: str):
     conn = await get_db_connection()
     async with conn.cursor() as cursor:
         try:
+            # model_info_id를 통해 공정 유형(press/welding) 확인
+            process_type = "press" if "press" in model_info_id else "welding" if "welding" in model_info_id else None
+            if process_type is None:
+                raise HTTPException(status_code=400, detail="Invalid process type in model_info_id")
+
+            # model_info에서 배포일자 업데이트
             await cursor.execute(
                 "UPDATE model_info SET deployment_date = %s WHERE model_info_id = %s",
                 (deployment_date, model_info_id)
             )
-            await cursor.execute("UPDATE model_use SET model_use_state = 0")
+
+            # model_use에서 선택된 공정의 모든 모델을 0으로 설정
+            await cursor.execute(
+                "UPDATE model_use SET model_use_state = 0 WHERE model_use_id LIKE %s",
+                (f"%{process_type}%",)
+            )
+
+            # 선택된 모델만 1로 설정
             await cursor.execute(
                 "UPDATE model_use SET model_use_state = 1 WHERE model_use_id = %s",
                 (model_info_id,)
             )
+
             await conn.commit()
-            return {"message": "배포가 성공적으로 완료되었습니다."}
+            return {"message": f"{process_type} 모델이 성공적으로 배포되었습니다."}
         except Exception as e:
             await conn.rollback()
             raise HTTPException(status_code=500, detail=str(e))
@@ -160,15 +185,15 @@ async def deploy_previous_model(model_info_id: str, deployment_date: str):
 
 @router.post("/model-apply")
 async def model_apply(
-    model_name: str = Form(...),
-    model_version: str = Form(...),
-    python_version: str = Form(...),
-    library: str = Form(...),
-    deployment_date: str = Form(...),
-    model_type: str = Form(...),
-    loss: float = Form(...),
-    accuracy: float = Form(...),
-    file: Optional[UploadFile] = File(None)
+        model_name: str = Form(...),
+        model_version: str = Form(...),
+        python_version: str = Form(...),
+        library: str = Form(...),
+        deployment_date: str = Form(...),
+        model_type: str = Form(...),
+        loss: float = Form(...),
+        accuracy: float = Form(...),
+        file: Optional[UploadFile] = File(None)
 ):
     """새 모델 적용 및 MySQL에 저장"""
     conn = await get_db_connection()
@@ -179,16 +204,27 @@ async def model_apply(
             time_part = deployment_date[11:16].replace(":", "-")
             model_info_id = f"{model_name}-{date_part}-{time_part}"
 
+            # 모델 적용할 때 공정 유형(press/welding) 확인
+            process_type = "press" if "press" in model_info_id else "welding" if "welding" in model_info_id else None
+            if process_type is None:
+                raise HTTPException(status_code=400, detail="Invalid process type in model_info_id")
+
+            # model_info 테이블에 새 모델 추가
             insert_model_info = """
                 INSERT INTO model_info 
                 (model_info_id, model_name, model_version, python_version, library, model_type, deployment_date, loss, accuracy, model_info_file)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             await cursor.execute(insert_model_info, (
-                model_info_id, model_name, model_version, python_version, library, model_type, deployment_date, loss, accuracy, file_content
+                model_info_id, model_name, model_version, python_version, library, model_type, deployment_date, loss,
+                accuracy, file_content
             ))
 
-            await cursor.execute("UPDATE model_use SET model_use_state = 0")
+            # model_use에서 해당 공정의 모든 모델을 0으로 설정
+            await cursor.execute("UPDATE model_use SET model_use_state = 0 WHERE model_use_id LIKE %s",
+                                 (f"%{process_type}%",))
+
+            # 새로 추가된 모델을 model_state 1로 설정
             insert_model_use = """
                 INSERT INTO model_use 
                 (model_use_id, model_use_state, model_use_file) 
@@ -198,7 +234,7 @@ async def model_apply(
             await conn.commit()
 
             return {
-                "message": "데이터가 MySQL에 성공적으로 저장되었습니다.",
+                "message": f"{process_type} 모델이 성공적으로 저장되었습니다.",
                 "model_info_id": model_info_id,
                 "file_uploaded": bool(file)
             }
