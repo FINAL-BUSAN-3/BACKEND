@@ -1,6 +1,6 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Depends #로그인
+from fastapi import Depends
 
 from controllers import test_controller
 from superset import get_superset_data
@@ -16,22 +16,33 @@ from io import BytesIO
 from datetime import datetime
 import logging
 import pytz
+import time
 
-#비밀번호 암호화를 위한 라이브러리
+# 비밀번호 암호화를 위한 라이브러리
 from passlib.context import CryptContext
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from database import get_db_connection
+import asyncio
+import uvicorn
 
-# 로깅 설정 추가
+# 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
 
-# CORS 설정
+# 전역 변수 및 상태 플래그
+current_index_welding = 0
+current_index_press = 0
+shared_trend_time_welding = datetime.now()
+shared_trend_time_press = datetime.now()
+updater_running = False
+all_operations_paused = False  # 모든 작업 중단 상태를 나타내는 플래그
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -41,6 +52,7 @@ app.add_middleware(
 )
 
 
+# 라우터 자동 등록
 def register_routers(app):
     router = APIRouter()
     package = "routers"
@@ -59,6 +71,52 @@ def register_routers(app):
             print(f"Error importing {full_module_name}: {e}")
 
     app.include_router(router)
+
+# 인덱스 업데이트 함수
+async def index_updater():
+    global current_index_welding, current_index_press, updater_running
+    if updater_running:
+        logger.info("Index updater is already running.")
+        return
+    updater_running = True
+    try:
+        while True:
+            if not all_operations_paused:
+                current_index_welding += 1
+                current_index_press += 1
+                logger.info(f"Updated index: welding={current_index_welding}, press={current_index_press}")
+            await asyncio.sleep(5)
+    except Exception as e:
+        logger.error(f"Error in index updater: {e}")
+    finally:
+        updater_running = False
+
+# 모든 작업 중단 함수
+def pause_all_operations():
+    global all_operations_paused
+    all_operations_paused = True
+    logger.info("All operations paused due to prediction event.")
+
+# 모든 작업 재개 함수
+def resume_all_operations():
+    global all_operations_paused
+    all_operations_paused = False
+    logger.info("All operations resumed by user action.")
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(index_updater())
+
+# 전역 상태 제어 엔드포인트 (재개)
+@app.post("/resume-process")
+async def resume_process():
+    global all_operations_paused
+    if all_operations_paused:
+        all_operations_paused = False  # 공정 재개
+        return {"message": "Process resumed successfully"}
+    else:
+        raise HTTPException(status_code=400, detail="Process is not paused")
+register_routers(app)
 
 
 # 컨트롤러의 라우터를 애플리케이션에 포함

@@ -7,7 +7,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="에러 수정 및 자동화" />
+    <list default="true" id="a50ee93e-5af6-4fb6-a1c1-6af945bc26a8" name="변경" comment="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경&#10;4. press랑 welding 변수 구분해서 값 2개 insert 문제 해결">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fastapi/routers/engineering.py" beforeDir="false" afterPath="$PROJECT_DIR$/fastapi/routers/engineering.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,7 +29,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="EO3-119-Backend-press-welding" />
+        <entry key="$PROJECT_DIR$" value="EO3-127-Backend-Welding-Animation" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -35,18 +41,10 @@
     &quot;assignee&quot;: &quot;Basil-Pesto-Pizza&quot;
   }
 }</component>
-  <component name="GithubProjectSettings">
-    <option name="branchProtectionPatterns">
-      <list>
-        <option value="develop" />
-        <option value="main" />
-      </list>
-    </option>
-  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/FINAL-BUSAN-3/BACKEND.git&quot;,
-    &quot;accountId&quot;: &quot;9799708f-2e00-4fe3-bd9f-d3b965d9345a&quot;
+    &quot;accountId&quot;: &quot;e159f07f-e5a3-4d64-8423-1a3033148387&quot;
   }
 }</component>
   <component name="ProblemsViewState">
@@ -61,22 +59,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/KFQ/Desktop/git/BACKEND&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main-hotfix-hsh",
+    "last_opened_file_path": "C:/Users/KFQ/Desktop/git/BACKEND",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="Push.Settings">
     <option name="SHOW_DETAILS_PANEL" value="false" />
   </component>
@@ -110,7 +103,6 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="main.py" />
       <option name="PARAMETERS" value="main:app --reload" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -129,8 +121,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.17890.14" />
-        <option value="bundled-python-sdk-5b207ade9991-7e9c3bbb6e34-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.17890.14" />
+        <option value="bundled-python-sdk-884f5ed5d46b-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.22855.92" />
       </set>
     </attachedChunks>
   </component>
@@ -142,7 +133,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1726898854628</updated>
-      <workItem from="1730893486186" duration="813000" />
     </task>
     <task id="LOCAL-00001" summary="커밋앤푸시">
       <option name="closed" value="true" />
@@ -336,75 +326,88 @@
       <option name="project" value="LOCAL" />
       <updated>1730336336854</updated>
     </task>
-    <task id="LOCAL-00025" summary="main.py 포트 설정">
+    <task id="LOCAL-00025" summary="일단 프레스랑 용접 기능 만들었음">
       <option name="closed" value="true" />
-      <created>1730529166181</created>
+      <created>1730881757890</created>
       <option name="number" value="00025" />
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
-      <updated>1730529166181</updated>
+      <updated>1730881757890</updated>
     </task>
-    <task id="LOCAL-00026" summary="main.py 포트 설정">
+    <task id="LOCAL-00026" summary="일단 프레스랑 용접 기능 만들었음">
       <option name="closed" value="true" />
-      <created>1730534376937</created>
+      <created>1730967192755</created>
       <option name="number" value="00026" />
       <option name="presentableId" value="LOCAL-00026" />
       <option name="project" value="LOCAL" />
-      <updated>1730534376937</updated>
+      <updated>1730967192756</updated>
     </task>
-    <task id="LOCAL-00027" summary="uvicorn 에러 해결">
+    <task id="LOCAL-00027" summary="일단 프레스랑 용접 기능 만들었음">
       <option name="closed" value="true" />
-      <created>1730536023906</created>
+      <created>1730968879550</created>
       <option name="number" value="00027" />
       <option name="presentableId" value="LOCAL-00027" />
       <option name="project" value="LOCAL" />
-      <updated>1730536023906</updated>
+      <updated>1730968879550</updated>
     </task>
-    <task id="LOCAL-00028" summary="uvicorn 에러 해결">
+    <task id="LOCAL-00028" summary="일단 프레스랑 용접 기능 만들었음">
       <option name="closed" value="true" />
-      <created>1730536107772</created>
+      <created>1731085167530</created>
       <option name="number" value="00028" />
       <option name="presentableId" value="LOCAL-00028" />
       <option name="project" value="LOCAL" />
-      <updated>1730536107772</updated>
+      <updated>1731085167530</updated>
     </task>
-    <task id="LOCAL-00029" summary="uvicorn 에러 해결">
+    <task id="LOCAL-00029" summary="일단 프레스랑 용접 기능 만들었음">
       <option name="closed" value="true" />
-      <created>1730536233208</created>
+      <created>1731085175449</created>
       <option name="number" value="00029" />
       <option name="presentableId" value="LOCAL-00029" />
       <option name="project" value="LOCAL" />
-      <updated>1730536233208</updated>
+      <updated>1731085175449</updated>
     </task>
-    <task id="LOCAL-00030" summary="uvicorn 에러 해결">
+    <task id="LOCAL-00030" summary="일단 프레스랑 용접 기능 만들었음">
       <option name="closed" value="true" />
-      <created>1730536341529</created>
+      <created>1731126387536</created>
       <option name="number" value="00030" />
       <option name="presentableId" value="LOCAL-00030" />
       <option name="project" value="LOCAL" />
-      <updated>1730536341529</updated>
+      <updated>1731126387536</updated>
     </task>
-    <task id="LOCAL-00031" summary="에러 수정 및 자동화">
+    <task id="LOCAL-00031" summary="일단 프레스랑 용접 기능 만들었음">
       <option name="closed" value="true" />
-      <created>1730893613651</created>
+      <created>1731142478479</created>
       <option name="number" value="00031" />
       <option name="presentableId" value="LOCAL-00031" />
       <option name="project" value="LOCAL" />
-      <updated>1730893613651</updated>
+      <updated>1731142478479</updated>
     </task>
-    <task id="LOCAL-00032" summary="에러 수정 및 자동화">
+    <task id="LOCAL-00032" summary="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경">
       <option name="closed" value="true" />
-      <created>1730894293988</created>
+      <created>1731243658239</created>
       <option name="number" value="00032" />
       <option name="presentableId" value="LOCAL-00032" />
       <option name="project" value="LOCAL" />
-      <updated>1730894293988</updated>
+      <updated>1731243658239</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경&#10;4. press랑 welding 변수 구분해서 값 2개 insert 문제 해결">
+      <option name="closed" value="true" />
+      <created>1731243857112</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1731243857112</updated>
+    </task>
+    <task id="LOCAL-00034" summary="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경&#10;4. press랑 welding 변수 구분해서 값 2개 insert 문제 해결">
+      <option name="closed" value="true" />
+      <created>1731573168076</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1731573168076</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -422,7 +425,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/develop" />
+                        <option value="origin/EO3-127-Backend-Welding-Animation" />
                       </list>
                     </value>
                   </entry>
@@ -452,9 +455,9 @@
     <MESSAGE value="사용자 관리 페이지 - 모델 배포 끝" />
     <MESSAGE value="&lt;Model - Welding 연동&gt;&#10;실시간 불량 예측 성공" />
     <MESSAGE value="한수현 + 서희림" />
-    <MESSAGE value="main.py 포트 설정" />
-    <MESSAGE value="uvicorn 에러 해결" />
-    <MESSAGE value="에러 수정 및 자동화" />
-    <option name="LAST_COMMIT_MESSAGE" value="에러 수정 및 자동화" />
+    <MESSAGE value="일단 프레스랑 용접 기능 만들었음" />
+    <MESSAGE value="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경" />
+    <MESSAGE value="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경&#10;4. press랑 welding 변수 구분해서 값 2개 insert 문제 해결" />
+    <option name="LAST_COMMIT_MESSAGE" value="&lt;프레스 용접 데이터 변경사항&gt;&#10;1. 데이터 수신 websockets&#10;2. 5초 구동방법 : 전역변수 설정, insert가 5초마다 변경사항 체크, select가 1초마다 insert의 변경사항 체크&#10;3. 애니메이션을 websockets 데이터 받아오면 구동되게 변경&#10;4. press랑 welding 변수 구분해서 값 2개 insert 문제 해결" />
   </component>
 </project>
