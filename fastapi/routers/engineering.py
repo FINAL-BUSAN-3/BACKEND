@@ -1,4 +1,3 @@
-# router/engineering.py
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from database import get_db_press_connection, get_db_welding_connection
 import main
@@ -17,12 +16,13 @@ welding_lock = asyncio.Lock()
 press_lock = asyncio.Lock()
 
 # 외부 API URL 설정
-NGROK_WELDING_MODEL_API = "https://fc86-34-71-228-136.ngrok-free.app/engineering/realtime-welding/predict"
-NGROK_PRESS_MODEL_API = "https://fc86-34-71-228-136.ngrok-free.app/engineering/realtime-press/predict"
+NGROK_WELDING_MODEL_API = "https://6e61-34-145-12-93.ngrok-free.app/engineering/realtime-welding/predict"
+NGROK_PRESS_MODEL_API = "https://6e61-34-145-12-93.ngrok-free.app/engineering/realtime-press/predict"
 
 # welding_data와 press_data를 공유 변수로 설정
 welding_data = None
 press_data = None
+
 
 # datetime을 문자열로 변환하는 유틸리티 함수
 def datetime_to_str(dt):
@@ -37,9 +37,10 @@ async def websocket_realtime_welding_insert(websocket: WebSocket):
 
     try:
         while True:
-            start_time = time.time()
+            start_time = datetime.now().timestamp()
 
-            if main.current_index_welding != last_index_welding:
+            # 예측이 중단된 상태가 아니면 데이터 처리
+            if not main.all_operations_paused and main.current_index_welding != last_index_welding:
                 last_index_welding = main.current_index_welding
 
                 async with welding_lock:
@@ -82,7 +83,7 @@ async def websocket_realtime_welding_insert(websocket: WebSocket):
                             main.current_index_welding = 0
                             await websocket.send_json({"message": "더 이상 데이터가 없어 인덱스를 초기화합니다."})
 
-            elapsed_time = time.time() - start_time
+            elapsed_time = datetime.now().timestamp() - start_time
             await asyncio.sleep(max(0, interval - elapsed_time))
 
     except WebSocketDisconnect:
@@ -100,7 +101,7 @@ async def websocket_realtime_welding_select(websocket: WebSocket):
 
     try:
         while True:
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.1)
 
             if welding_data != last_data_welding:
                 last_data_welding = welding_data
@@ -134,14 +135,25 @@ async def websocket_realtime_welding_select(websocket: WebSocket):
 
                                 logger.info(f"예측 값 - trend_time: {main.shared_trend_time_welding}, 예측: {prediction}")
                                 await websocket.send_json({"welding_prediction": prediction})
+
+                                # 예측 값이 1일 때만 insert 멈추기
+                                if prediction == 1:
+                                    main.pause_all_operations()  # Insert만 멈춤
+                                    await websocket.send_json({"stop_event": True})
+                                else:
+                                    # 예측 값이 0일 경우에도 인덱스를 증가시켜 다음 데이터로 이동
+                                    main.current_index_welding += 1
+
                             else:
                                 await websocket.send_json({"message": f"예측 API가 상태 {response.status}로 실패했습니다."})
+
     except WebSocketDisconnect:
         logger.info("클라이언트가 웰딩 select 웹소켓 연결을 끊었습니다.")
         await websocket.close()
     except Exception as e:
         logger.error(f"예기치 못한 오류: {e}")
         await websocket.close()
+
 
 # Press Insert WebSocket
 @router.websocket("/ws/realtime-press/insert")
@@ -152,9 +164,10 @@ async def websocket_realtime_press_insert(websocket: WebSocket):
 
     try:
         while True:
-            start_time = time.time()
+            start_time = datetime.now().timestamp()
 
-            if main.current_index_press != last_index_press:
+            # 예측이 중단된 상태가 아니면 데이터 처리
+            if not main.all_operations_paused and main.current_index_press != last_index_press:
                 last_index_press = main.current_index_press
 
                 async with press_lock:
@@ -193,7 +206,7 @@ async def websocket_realtime_press_insert(websocket: WebSocket):
                             main.current_index_press = 0
                             await websocket.send_json({"message": "더 이상 데이터가 없어 인덱스를 초기화합니다."})
 
-            elapsed_time = time.time() - start_time
+            elapsed_time = datetime.now().timestamp() - start_time
             await asyncio.sleep(max(0, interval - elapsed_time))
 
     except WebSocketDisconnect:
