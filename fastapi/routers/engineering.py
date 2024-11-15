@@ -16,8 +16,8 @@ welding_lock = asyncio.Lock()
 press_lock = asyncio.Lock()
 
 # 외부 API URL 설정
-NGROK_WELDING_MODEL_API = "https://6e61-34-145-12-93.ngrok-free.app/engineering/realtime-welding/predict"
-NGROK_PRESS_MODEL_API = "https://6e61-34-145-12-93.ngrok-free.app/engineering/realtime-press/predict"
+NGROK_WELDING_MODEL_API = "https://2373-34-45-71-184.ngrok-free.app/engineering/realtime-welding/predict"
+NGROK_PRESS_MODEL_API = "https://2373-34-45-71-184.ngrok-free.app/engineering/realtime-press/predict"
 
 # welding_data와 press_data를 공유 변수로 설정
 welding_data = None
